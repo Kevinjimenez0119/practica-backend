@@ -1,8 +1,8 @@
 package com.pragma.customer.infraestructura.endpoint.clientes;
 
 import com.pragma.customer.aplicacion.manjeador.ManejadorCliente;
+import com.pragma.customer.dominio.modelo.Cliente;
 import com.pragma.customer.dominio.modelo.Mensaje;
-import com.pragma.customer.infraestructura.persistencia.entity.ClienteEntidad;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -37,11 +37,11 @@ public class EndpointListarPaginado {
     })
     public ResponseEntity<?> listarClientes(
             @PageableDefault(size = 10, page = 0) Pageable pageable) throws Exception {
-        Page<ClienteEntidad> clienteEntidads = manejadorCliente.listarPag(pageable);
-        if(clienteEntidads.isEmpty())
+        Page<Cliente> clienteList = manejadorCliente.listarPag(pageable);
+        if(clienteList.isEmpty())
         {
             return new ResponseEntity<>(new Mensaje("No hay registros"), HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(clienteEntidads, HttpStatus.OK);
+        return new ResponseEntity<>(clienteList, HttpStatus.OK);
     }
 }

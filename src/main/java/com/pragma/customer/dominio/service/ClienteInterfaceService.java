@@ -19,19 +19,19 @@ public interface ClienteInterfaceService {
 
     void delete(Integer id);
 
-    List<ClienteEntidad> findAll();
+    List<Cliente> findAll();
 
     //FIND
-    Optional<ClienteEntidad> findById(Integer id);
+    Cliente findById(Integer id);
 
-    Optional<ClienteEntidad> findByIdentificacion(Integer identificacion);
+    Cliente findByIdentificacion(Integer identificacion);
 
     boolean existsByIdentificacion(Integer id);
 
-    List<ClienteEntidad> findByAge(Integer edad);
+    List<Cliente> findByAge(Integer edad);
 
     //SORTING
-    Page<ClienteEntidad> findAllPag(Pageable pageable);
+    Page<Cliente> findAllPag(Pageable pageable);
 
     //LOGIC
     boolean validateClient(Cliente cliente);

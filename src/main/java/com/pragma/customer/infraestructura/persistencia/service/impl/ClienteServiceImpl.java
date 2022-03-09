@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -55,16 +56,15 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     @Override
     public void update(Cliente cliente) {
         try {
-            Optional<TipoDocumentoEntidad> tipoDocumentoEntidad = tipoDocumentoInterfaceReporsitory.findByTipoDocumento(cliente.getTipoDocumento());
-            Optional<ClienteEntidad> clienteEntidad = findByIdentificacion(cliente.getIdentificacion());
-            clienteEntidad.get().setNombres(cliente.getNombres());
-            clienteEntidad.get().setApellidos(cliente.getApellidos());
-            clienteEntidad.get().setCiudadNacimiento(cliente.getCiudadNacimiento());
-            clienteEntidad.get().setEdad(cliente.getEdad());
-            clienteEntidad.get().setTipoDocumentoEntidad(tipoDocumentoEntidad.get());
-            clienteEntidad.get().setFechaNacimiento(cliente.getFechaNacimiento());
-            clienteEntidad.get().setIdentificacion((cliente.getIdentificacion()));
-            clienteInterfaceRepository.save(clienteEntidad.get());
+            Cliente clienteUpdate = findByIdentificacion(cliente.getIdentificacion());
+            clienteUpdate.setNombres(cliente.getNombres());
+            clienteUpdate.setApellidos(cliente.getApellidos());
+            clienteUpdate.setCiudadNacimiento(cliente.getCiudadNacimiento());
+            clienteUpdate.setEdad(cliente.getEdad());
+            clienteUpdate.setTipoDocumento(cliente.getTipoDocumento());
+            clienteUpdate.setFechaNacimiento(cliente.getFechaNacimiento());
+            clienteUpdate.setIdentificacion((cliente.getIdentificacion()));
+            save(clienteUpdate);
         } catch (Exception e) {
             logger.error("Error al registrar el cliente", e);
         }
@@ -73,7 +73,7 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     @Override
     public void delete(Integer identificacion) {
         try {
-            Optional<ClienteEntidad> clienteEntidad = findById(identificacion);
+            Optional<ClienteEntidad> clienteEntidad = clienteInterfaceRepository.findById(identificacion);
             clienteInterfaceRepository.delete(clienteEntidad.get());
         } catch (Exception e) {
             logger.error("Error al eliminar el cliente", e);
@@ -81,9 +81,24 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     }
 
     @Override
-    public List<ClienteEntidad> findAll() {
+    public List<Cliente> findAll() {
         try {
-            return (List<ClienteEntidad>) clienteInterfaceRepository.findAll();
+            List<Cliente> clienteList = new ArrayList<>();
+            List<ClienteEntidad> clienteEntidadList = clienteInterfaceRepository.findAll();
+            for(ClienteEntidad clienteEntidad: clienteEntidadList)
+            {
+                Cliente cliente = Cliente.builder()
+                        .nombres(clienteEntidad.getNombres())
+                        .apellidos(clienteEntidad.getApellidos())
+                        .edad(clienteEntidad.getEdad())
+                        .fechaNacimiento(clienteEntidad.getFechaNacimiento())
+                        .identificacion(clienteEntidad.getIdentificacion())
+                        .ciudadNacimiento(clienteEntidad.getCiudadNacimiento())
+                        .tipoDocumento(clienteEntidad.getTipoDocumentoEntidad().getTipoDocumento())
+                        .build();
+                clienteList.add(cliente);
+            }
+            return clienteList;
         } catch (Exception e) {
             logger.error("Error al listar clientes", e);
         }
@@ -91,9 +106,20 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     }
 
     @Override
-    public Optional<ClienteEntidad> findById(Integer id) {
+    public Cliente findById(Integer id) {
         try {
-            return clienteInterfaceRepository.findById(id);
+            Optional<ClienteEntidad> clienteEntidad = clienteInterfaceRepository.findById(id);
+            Cliente cliente = Cliente.builder()
+                    .nombres(clienteEntidad.get().getNombres())
+                    .apellidos(clienteEntidad.get().getApellidos())
+                    .edad(clienteEntidad.get().getEdad())
+                    .fechaNacimiento(clienteEntidad.get().getFechaNacimiento())
+                    .identificacion(clienteEntidad.get().getIdentificacion())
+                    .ciudadNacimiento(clienteEntidad.get().getCiudadNacimiento())
+                    .tipoDocumento(clienteEntidad.get().getTipoDocumentoEntidad().getTipoDocumento())
+                    .build();
+
+            return cliente;
         } catch (Exception e) {
             logger.error("Error al buscar cliente por id", e);
         }
@@ -101,9 +127,20 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     }
 
     @Override
-    public Optional<ClienteEntidad> findByIdentificacion(Integer identificacion) {
+    public Cliente findByIdentificacion(Integer identificacion) {
         try {
-            return clienteInterfaceRepository.findByIdentificacion(identificacion);
+            Optional<ClienteEntidad> clienteEntidad = clienteInterfaceRepository.findByIdentificacion(identificacion);
+            Cliente cliente = Cliente.builder()
+                    .nombres(clienteEntidad.get().getNombres())
+                    .apellidos(clienteEntidad.get().getApellidos())
+                    .edad(clienteEntidad.get().getEdad())
+                    .fechaNacimiento(clienteEntidad.get().getFechaNacimiento())
+                    .identificacion(clienteEntidad.get().getIdentificacion())
+                    .ciudadNacimiento(clienteEntidad.get().getCiudadNacimiento())
+                    .tipoDocumento(clienteEntidad.get().getTipoDocumentoEntidad().getTipoDocumento())
+                    .build();
+
+            return cliente;
         } catch (Exception e) {
             logger.error("Error al buscar cliente por identificacion", e);
         }
@@ -121,9 +158,24 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     }
 
     @Override
-    public List<ClienteEntidad> findByAge(Integer edad) {
+    public List<Cliente> findByAge(Integer edad) {
         try {
-            return (List<ClienteEntidad>) clienteInterfaceRepository.findByAge(edad);
+            List<Cliente> clienteList = new ArrayList<>();
+            List<ClienteEntidad> clienteEntidadList = clienteInterfaceRepository.findByAge(edad);
+            for(ClienteEntidad clienteEntidad: clienteEntidadList)
+            {
+                Cliente cliente = Cliente.builder()
+                        .nombres(clienteEntidad.getNombres())
+                        .apellidos(clienteEntidad.getApellidos())
+                        .edad(clienteEntidad.getEdad())
+                        .fechaNacimiento(clienteEntidad.getFechaNacimiento())
+                        .identificacion(clienteEntidad.getIdentificacion())
+                        .ciudadNacimiento(clienteEntidad.getCiudadNacimiento())
+                        .tipoDocumento(clienteEntidad.getTipoDocumentoEntidad().getTipoDocumento())
+                        .build();
+                clienteList.add(cliente);
+            }
+            return clienteList;
         } catch (Exception e) {
             logger.error("Error al listar cliente por edad", e);
         }
@@ -131,9 +183,26 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     }
 
     @Override
-    public Page<ClienteEntidad> findAllPag(Pageable pageable) {
+    public Page<Cliente> findAllPag(Pageable pageable) {
         try {
-            return clienteInterfaceRepository.findAll(pageable);
+
+            List<Cliente> clienteList = new ArrayList<>();
+            Page<ClienteEntidad> clienteEntidadList = clienteInterfaceRepository.findAll(pageable);
+            for(ClienteEntidad clienteEntidad: clienteEntidadList)
+            {
+                Cliente cliente = Cliente.builder()
+                        .nombres(clienteEntidad.getNombres())
+                        .apellidos(clienteEntidad.getApellidos())
+                        .edad(clienteEntidad.getEdad())
+                        .fechaNacimiento(clienteEntidad.getFechaNacimiento())
+                        .identificacion(clienteEntidad.getIdentificacion())
+                        .ciudadNacimiento(clienteEntidad.getCiudadNacimiento())
+                        .tipoDocumento(clienteEntidad.getTipoDocumentoEntidad().getTipoDocumento())
+                        .build();
+                clienteList.add(cliente);
+            }
+            Page<Cliente> clientePageList = new PageImpl<>(clienteList);
+            return clientePageList;
         } catch (Exception e) {
             logger.error("Error al listar cliente por edad", e);
         }

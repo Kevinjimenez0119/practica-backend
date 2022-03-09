@@ -1,6 +1,7 @@
 package com.pragma.customer.infraestructura.endpoint.clientes;
 
 import com.pragma.customer.aplicacion.manjeador.ManejadorCliente;
+import com.pragma.customer.dominio.modelo.Cliente;
 import com.pragma.customer.dominio.modelo.Mensaje;
 import com.pragma.customer.infraestructura.persistencia.entity.ClienteEntidad;
 import io.swagger.annotations.ApiOperation;
@@ -40,8 +41,8 @@ public class EndpointObtenerEdadPorFechaNacimiento {
 
         if(manejadorCliente.existeCliente(numero) == true )
         {
-            ClienteEntidad clienteEntidad = manejadorCliente.buscarPorIdentificacion(numero);
-            Integer edad = manejadorCliente.edadPorFecha(clienteEntidad.getFechaNacimiento());
+            Cliente cliente = manejadorCliente.buscarPorIdentificacion(numero);
+            Integer edad = manejadorCliente.edadPorFecha(cliente.getFechaNacimiento());
             return new ResponseEntity<>(edad, HttpStatus.OK);
         }else{
             return new ResponseEntity<>(new Mensaje("no hay ningun cliente que con identificacion " + numero ), HttpStatus.NOT_FOUND);

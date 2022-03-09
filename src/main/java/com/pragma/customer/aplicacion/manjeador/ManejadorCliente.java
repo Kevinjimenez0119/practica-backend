@@ -28,19 +28,19 @@ public class ManejadorCliente {
         clienteUseCase.eliminar(id);
     }
 
-    public List<ClienteEntidad> listar() {
+    public List<Cliente> listar() {
         return clienteUseCase.listar();
     }
 
-    public ClienteEntidad buscarPorId(Integer id) {
+    public Cliente buscarPorId(Integer id) {
         return clienteUseCase.buscarPorId(id);
     }
 
-    public ClienteEntidad buscarPorIdentificacion(Integer identificacion) {
+    public Cliente buscarPorIdentificacion(Integer identificacion) {
         return clienteUseCase.buscarPorIdentificacion(identificacion);
     }
 
-    public List<ClienteEntidad> listarPorEdadMayor(Integer edad) {
+    public List<Cliente> listarPorEdadMayor(Integer edad) {
         return clienteUseCase.listarPorEdadMayor(edad);
     }
 
@@ -48,7 +48,7 @@ public class ManejadorCliente {
         return clienteUseCase.existeCliente(identificacion);
     }
 
-    public Page<ClienteEntidad> listarPag(Pageable pageable) {
+    public Page<Cliente> listarPag(Pageable pageable) {
         return clienteUseCase.listarPag(pageable);
     }
 

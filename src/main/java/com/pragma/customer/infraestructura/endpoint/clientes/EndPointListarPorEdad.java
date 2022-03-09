@@ -3,6 +3,7 @@ package com.pragma.customer.infraestructura.endpoint.clientes;
 import com.pragma.customer.aplicacion.manjeador.ManejadorCliente;
 import com.pragma.customer.aplicacion.manjeador.ManejadorTipoDocumento;
 import com.pragma.customer.aplicacion.utils.ErrorsUtils;
+import com.pragma.customer.dominio.modelo.Cliente;
 import com.pragma.customer.dominio.useCase.cliente.ClienteUseCase;
 import com.pragma.customer.infraestructura.persistencia.entity.ClienteEntidad;
 import io.swagger.annotations.ApiOperation;
@@ -40,11 +41,11 @@ public class EndPointListarPorEdad {
             @ApiParam(value = "edad", required = true, example = "20")
                     Integer edad
     ) throws Exception {
-        List<ClienteEntidad> clienteEntidads = manejadorCliente.listarPorEdadMayor(edad);
-        if(clienteEntidads.isEmpty())
+        List<Cliente> clienteList = manejadorCliente.listarPorEdadMayor(edad);
+        if(clienteList.isEmpty())
         {
             return new ResponseEntity<>(ErrorsUtils.sinClientesPorEdad(edad), HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity(clienteEntidads, HttpStatus.OK);
+        return new ResponseEntity(clienteList, HttpStatus.OK);
     }
 }

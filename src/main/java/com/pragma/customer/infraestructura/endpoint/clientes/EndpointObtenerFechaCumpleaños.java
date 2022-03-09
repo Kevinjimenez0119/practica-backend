@@ -2,6 +2,7 @@ package com.pragma.customer.infraestructura.endpoint.clientes;
 
 import com.pragma.customer.aplicacion.manjeador.ManejadorCliente;
 import com.pragma.customer.aplicacion.manjeador.ManejadorTipoDocumento;
+import com.pragma.customer.dominio.modelo.Cliente;
 import com.pragma.customer.dominio.modelo.Mensaje;
 import com.pragma.customer.infraestructura.persistencia.entity.ClienteEntidad;
 import io.swagger.annotations.ApiOperation;
@@ -41,8 +42,8 @@ public class EndpointObtenerFechaCumpleaños {
 
         if(manejadorCliente.existeCliente(numero) == true )
         {
-            ClienteEntidad clienteEntidad = manejadorCliente.buscarPorIdentificacion(numero);
-            LocalDate birthDay = manejadorCliente.birthDay(clienteEntidad.getFechaNacimiento());
+            Cliente cliente = manejadorCliente.buscarPorIdentificacion(numero);
+            LocalDate birthDay = manejadorCliente.birthDay(cliente.getFechaNacimiento());
             return new ResponseEntity<>(birthDay, HttpStatus.OK);
         }else{
             return new ResponseEntity<>(new Mensaje("no hay ningun cliente que con identificacion " + numero ), HttpStatus.NOT_FOUND);

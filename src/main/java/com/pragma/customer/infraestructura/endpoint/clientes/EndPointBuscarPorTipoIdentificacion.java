@@ -2,6 +2,7 @@ package com.pragma.customer.infraestructura.endpoint.clientes;
 
 import com.pragma.customer.aplicacion.manjeador.ManejadorCliente;
 import com.pragma.customer.aplicacion.manjeador.ManejadorTipoDocumento;
+import com.pragma.customer.dominio.modelo.Cliente;
 import com.pragma.customer.dominio.modelo.Mensaje;
 import com.pragma.customer.dominio.useCase.cliente.ClienteUseCase;
 import com.pragma.customer.dominio.useCase.tipodocumento.TipoDocumentoUseCase;
@@ -50,8 +51,8 @@ public class EndPointBuscarPorTipoIdentificacion {
 
         if(manejadorCliente.existeCliente(numero) == true && manejadorTipoDocumento.existeTipo(tipo) == true)
         {
-            ClienteEntidad clienteEntidad = manejadorCliente.buscarPorIdentificacion(numero);
-            return new ResponseEntity(clienteEntidad, HttpStatus.OK);
+            Cliente cliente = manejadorCliente.buscarPorIdentificacion(numero);
+            return new ResponseEntity(cliente, HttpStatus.OK);
 
         }else{
             return new ResponseEntity<>(new Mensaje("no hay ningun cliente que con identificacion " + numero + " con tipo de documento " + tipo), HttpStatus.NOT_FOUND);

@@ -2,6 +2,7 @@ package com.pragma.customer.infraestructura.endpoint.clientes;
 
 import com.pragma.customer.aplicacion.manjeador.ManejadorCliente;
 import com.pragma.customer.aplicacion.manjeador.ManejadorTipoDocumento;
+import com.pragma.customer.dominio.modelo.Cliente;
 import com.pragma.customer.dominio.modelo.Mensaje;
 import com.pragma.customer.dominio.useCase.cliente.ClienteUseCase;
 import com.pragma.customer.infraestructura.persistencia.entity.ClienteEntidad;
@@ -38,11 +39,11 @@ public class EndpointListarClientes {
             @ApiResponse(code = 204, message = "no hay ningun cliente registrado")
     })
     public ResponseEntity<?> listarClientes() throws Exception {
-        List<ClienteEntidad> clienteEntidads = manejadorCliente.listar();
-        if(clienteEntidads.isEmpty())
+        List<Cliente> clienteList = manejadorCliente.listar();
+        if(clienteList.isEmpty())
         {
             return new ResponseEntity<>(new Mensaje("No hay registros"), HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(clienteEntidads, HttpStatus.OK);
+        return new ResponseEntity<>(clienteList, HttpStatus.OK);
     }
 }
