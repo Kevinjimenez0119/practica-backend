@@ -12,6 +12,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TipoDocumento {
 
+    @ApiModelProperty(notes = "id autoincremental")
+    private Integer id;
+
     @ApiModelProperty(notes = "Tipo de documento", required = true)
     private String tipoDocumento;
 

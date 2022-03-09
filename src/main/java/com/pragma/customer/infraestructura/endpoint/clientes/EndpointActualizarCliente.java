@@ -29,7 +29,7 @@ public class EndpointActualizarCliente {
     @Autowired
     private ManejadorTipoDocumento manejadorTipoDocumento;
 
-    @PutMapping("/update")
+    @PutMapping()
     @ApiOperation("actualiza un cliente")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK"),

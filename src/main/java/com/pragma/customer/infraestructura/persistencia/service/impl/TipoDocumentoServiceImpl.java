@@ -3,6 +3,7 @@ package com.pragma.customer.infraestructura.persistencia.service.impl;
 import com.pragma.customer.dominio.modelo.Cliente;
 import com.pragma.customer.dominio.modelo.TipoDocumento;
 import com.pragma.customer.dominio.service.TipoDocumentoInterfaceService;
+import com.pragma.customer.infraestructura.mappers.TipoDocumentoMapper;
 import com.pragma.customer.infraestructura.persistencia.entity.TipoDocumentoEntidad;
 import com.pragma.customer.infraestructura.persistencia.repository.TipoDocumentoInterfaceReporsitory;
 import org.slf4j.Logger;
@@ -21,6 +22,10 @@ public class TipoDocumentoServiceImpl implements TipoDocumentoInterfaceService {
 
     @Autowired
     private TipoDocumentoInterfaceReporsitory tipoDocumentoInterfaceReporsitory;
+
+    @Autowired
+    private TipoDocumentoMapper tipoDocumentoMapper;
+
     @Override
     public void save(TipoDocumento tipoDocumento) {
         try {
@@ -57,15 +62,7 @@ public class TipoDocumentoServiceImpl implements TipoDocumentoInterfaceService {
     @Override
     public List<TipoDocumento> findAll() {
         try {
-            List<TipoDocumento> tipoDocumentoList = new ArrayList<>();
-            List<TipoDocumentoEntidad> tipoDocumentoEntidadList = tipoDocumentoInterfaceReporsitory.findAll();
-            for (TipoDocumentoEntidad tipoDocumentoEntidad: tipoDocumentoEntidadList) {
-                TipoDocumento tipoDocumento = TipoDocumento.builder()
-                        .tipoDocumento(tipoDocumentoEntidad.getTipoDocumento())
-                            .build();
-                tipoDocumentoList.add(tipoDocumento);
-            }
-            return tipoDocumentoList;
+            return tipoDocumentoMapper.toTipoDocumentoListDto(tipoDocumentoInterfaceReporsitory.findAll());
         } catch (Exception e) {
             logger.error("Error al listar tipos de documento", e);
         }
@@ -75,11 +72,7 @@ public class TipoDocumentoServiceImpl implements TipoDocumentoInterfaceService {
     @Override
     public TipoDocumento findById(Integer id) {
         try {
-            Optional<TipoDocumentoEntidad> tipoDocumentoEntidad = tipoDocumentoInterfaceReporsitory.findById(id);
-            TipoDocumento tipoDocumento = TipoDocumento.builder()
-                    .tipoDocumento(tipoDocumentoEntidad.get().getTipoDocumento())
-                    .build();
-            return tipoDocumento;
+            return tipoDocumentoMapper.toTipoDocumentoDto(tipoDocumentoInterfaceReporsitory.findById(id).get());
         } catch (Exception e) {
             logger.error("Error busqueda de tipo por id", e);
         }
@@ -89,11 +82,7 @@ public class TipoDocumentoServiceImpl implements TipoDocumentoInterfaceService {
     @Override
     public TipoDocumento findByTipoDocumento(String tipo) {
         try {
-            Optional<TipoDocumentoEntidad> tipoDocumentoEntidad = tipoDocumentoInterfaceReporsitory.findByTipoDocumento(tipo);
-            TipoDocumento tipoDocumento = TipoDocumento.builder()
-                    .tipoDocumento(tipoDocumentoEntidad.get().getTipoDocumento())
-                    .build();
-            return tipoDocumento;
+            return tipoDocumentoMapper.toTipoDocumentoDto(tipoDocumentoInterfaceReporsitory.findByTipoDocumento(tipo).get());
         } catch (Exception e) {
             logger.error("Error busqueda de tipo por tipo", e);
         }

@@ -26,7 +26,7 @@ public class EndpointGuardarTipoDocumento {
     @Autowired
     private ManejadorTipoDocumento manejadorTipoDocumento;
 
-    @PostMapping("/save")
+    @PostMapping("")
     @ApiOperation("guarda un tipo de identificacion")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK"),

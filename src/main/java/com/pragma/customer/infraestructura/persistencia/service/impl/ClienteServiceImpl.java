@@ -2,6 +2,7 @@ package com.pragma.customer.infraestructura.persistencia.service.impl;
 
 import com.pragma.customer.dominio.service.ClienteInterfaceService;
 import com.pragma.customer.dominio.modelo.Cliente;
+import com.pragma.customer.infraestructura.mappers.ClienteMapper;
 import com.pragma.customer.infraestructura.persistencia.entity.ClienteEntidad;
 import com.pragma.customer.infraestructura.persistencia.entity.TipoDocumentoEntidad;
 import com.pragma.customer.infraestructura.persistencia.repository.ClienteInterfaceRepository;
@@ -33,6 +34,9 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
 
     @Autowired
     private TipoDocumentoInterfaceReporsitory tipoDocumentoInterfaceReporsitory;
+
+    @Autowired
+    private ClienteMapper clienteMapper;
 
     @Override
     public void save(Cliente cliente) {
@@ -83,22 +87,7 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     @Override
     public List<Cliente> findAll() {
         try {
-            List<Cliente> clienteList = new ArrayList<>();
-            List<ClienteEntidad> clienteEntidadList = clienteInterfaceRepository.findAll();
-            for(ClienteEntidad clienteEntidad: clienteEntidadList)
-            {
-                Cliente cliente = Cliente.builder()
-                        .nombres(clienteEntidad.getNombres())
-                        .apellidos(clienteEntidad.getApellidos())
-                        .edad(clienteEntidad.getEdad())
-                        .fechaNacimiento(clienteEntidad.getFechaNacimiento())
-                        .identificacion(clienteEntidad.getIdentificacion())
-                        .ciudadNacimiento(clienteEntidad.getCiudadNacimiento())
-                        .tipoDocumento(clienteEntidad.getTipoDocumentoEntidad().getTipoDocumento())
-                        .build();
-                clienteList.add(cliente);
-            }
-            return clienteList;
+            return clienteMapper.toClienteListDto(clienteInterfaceRepository.findAll());
         } catch (Exception e) {
             logger.error("Error al listar clientes", e);
         }
@@ -108,18 +97,7 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     @Override
     public Cliente findById(Integer id) {
         try {
-            Optional<ClienteEntidad> clienteEntidad = clienteInterfaceRepository.findById(id);
-            Cliente cliente = Cliente.builder()
-                    .nombres(clienteEntidad.get().getNombres())
-                    .apellidos(clienteEntidad.get().getApellidos())
-                    .edad(clienteEntidad.get().getEdad())
-                    .fechaNacimiento(clienteEntidad.get().getFechaNacimiento())
-                    .identificacion(clienteEntidad.get().getIdentificacion())
-                    .ciudadNacimiento(clienteEntidad.get().getCiudadNacimiento())
-                    .tipoDocumento(clienteEntidad.get().getTipoDocumentoEntidad().getTipoDocumento())
-                    .build();
-
-            return cliente;
+            return clienteMapper.toClienteDto(clienteInterfaceRepository.findById(id).get());
         } catch (Exception e) {
             logger.error("Error al buscar cliente por id", e);
         }
@@ -129,18 +107,7 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     @Override
     public Cliente findByIdentificacion(Integer identificacion) {
         try {
-            Optional<ClienteEntidad> clienteEntidad = clienteInterfaceRepository.findByIdentificacion(identificacion);
-            Cliente cliente = Cliente.builder()
-                    .nombres(clienteEntidad.get().getNombres())
-                    .apellidos(clienteEntidad.get().getApellidos())
-                    .edad(clienteEntidad.get().getEdad())
-                    .fechaNacimiento(clienteEntidad.get().getFechaNacimiento())
-                    .identificacion(clienteEntidad.get().getIdentificacion())
-                    .ciudadNacimiento(clienteEntidad.get().getCiudadNacimiento())
-                    .tipoDocumento(clienteEntidad.get().getTipoDocumentoEntidad().getTipoDocumento())
-                    .build();
-
-            return cliente;
+            return clienteMapper.toClienteDto(clienteInterfaceRepository.findByIdentificacion(identificacion).get());
         } catch (Exception e) {
             logger.error("Error al buscar cliente por identificacion", e);
         }
@@ -160,22 +127,7 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     @Override
     public List<Cliente> findByAge(Integer edad) {
         try {
-            List<Cliente> clienteList = new ArrayList<>();
-            List<ClienteEntidad> clienteEntidadList = clienteInterfaceRepository.findByAge(edad);
-            for(ClienteEntidad clienteEntidad: clienteEntidadList)
-            {
-                Cliente cliente = Cliente.builder()
-                        .nombres(clienteEntidad.getNombres())
-                        .apellidos(clienteEntidad.getApellidos())
-                        .edad(clienteEntidad.getEdad())
-                        .fechaNacimiento(clienteEntidad.getFechaNacimiento())
-                        .identificacion(clienteEntidad.getIdentificacion())
-                        .ciudadNacimiento(clienteEntidad.getCiudadNacimiento())
-                        .tipoDocumento(clienteEntidad.getTipoDocumentoEntidad().getTipoDocumento())
-                        .build();
-                clienteList.add(cliente);
-            }
-            return clienteList;
+            return clienteMapper.toClienteListDto(clienteInterfaceRepository.findByAge(edad));
         } catch (Exception e) {
             logger.error("Error al listar cliente por edad", e);
         }
@@ -185,22 +137,8 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     @Override
     public Page<Cliente> findAllPag(Pageable pageable) {
         try {
-
-            List<Cliente> clienteList = new ArrayList<>();
             Page<ClienteEntidad> clienteEntidadList = clienteInterfaceRepository.findAll(pageable);
-            for(ClienteEntidad clienteEntidad: clienteEntidadList)
-            {
-                Cliente cliente = Cliente.builder()
-                        .nombres(clienteEntidad.getNombres())
-                        .apellidos(clienteEntidad.getApellidos())
-                        .edad(clienteEntidad.getEdad())
-                        .fechaNacimiento(clienteEntidad.getFechaNacimiento())
-                        .identificacion(clienteEntidad.getIdentificacion())
-                        .ciudadNacimiento(clienteEntidad.getCiudadNacimiento())
-                        .tipoDocumento(clienteEntidad.getTipoDocumentoEntidad().getTipoDocumento())
-                        .build();
-                clienteList.add(cliente);
-            }
+            List<Cliente> clienteList = clienteMapper.toClienteListDto(clienteEntidadList.toList());
             Page<Cliente> clientePageList = new PageImpl<>(clienteList);
             return clientePageList;
         } catch (Exception e) {

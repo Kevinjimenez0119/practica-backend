@@ -14,6 +14,9 @@ import java.util.Date;
 @Builder
 public class Cliente {
 
+    @ApiModelProperty(notes = "id autoincremental")
+    private Integer id;
+
     @ApiModelProperty(notes = "Nombres del cliente", required = true)
     private String nombres;
 

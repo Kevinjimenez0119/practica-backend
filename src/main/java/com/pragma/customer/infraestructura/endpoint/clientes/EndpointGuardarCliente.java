@@ -29,7 +29,7 @@ public class EndpointGuardarCliente {
     @Autowired
     private ManejadorTipoDocumento manejadorTipoDocumento;
 
-    @PostMapping("/save")
+    @PostMapping()
     @ApiOperation("guarda un cliente")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK"),

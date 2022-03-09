@@ -26,7 +26,7 @@ public class EndpointActualizarTipoDocumento {
     @Autowired
     private ManejadorTipoDocumento manejadorTipoDocumento;
 
-    @PutMapping("/update")
+    @PutMapping()
     @ApiOperation("actualiza un tipo de documento")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK"),

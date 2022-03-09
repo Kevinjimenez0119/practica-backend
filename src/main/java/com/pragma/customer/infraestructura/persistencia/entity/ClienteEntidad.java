@@ -28,7 +28,7 @@ public class ClienteEntidad implements Serializable {
     @Column(nullable = false)
     private String apellidos;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "tipoDocumento", referencedColumnName = "id")
     private TipoDocumentoEntidad tipoDocumentoEntidad;
 
