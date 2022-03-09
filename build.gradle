@@ -1,0 +1,48 @@
+plugins {
+	id 'org.springframework.boot' version '2.3.4.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+group = 'com.pragma'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	// Spring Boot
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter'
+    // swagger
+	implementation 'io.springfox:springfox-swagger2:2.9.2'
+	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+	// lombok and mapstruct
+	implementation 'org.mapstruct:mapstruct:1.4.2.Final'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
+	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+	// persistence
+	runtimeOnly 'mysql:mysql-connector-java'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	// test
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+	implementation 'org.mockito:mockito-core:3.11.2'
+	implementation 'com.github.javafaker:javafaker:1.0.2'
+
+}
+
+test {
+	useJUnitPlatform()
+}
+
