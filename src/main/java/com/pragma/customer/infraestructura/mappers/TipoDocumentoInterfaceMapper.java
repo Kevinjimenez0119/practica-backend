@@ -10,7 +10,7 @@ import org.mapstruct.Mappings;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface TipoDocumentoMapper {
+public interface TipoDocumentoInterfaceMapper {
 
 
     @Mappings({

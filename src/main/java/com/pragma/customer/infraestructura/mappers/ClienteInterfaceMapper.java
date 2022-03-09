@@ -1,7 +1,6 @@
 package com.pragma.customer.infraestructura.mappers;
 
 import com.pragma.customer.dominio.modelo.Cliente;
-import com.pragma.customer.dominio.modelo.TipoDocumento;
 import com.pragma.customer.infraestructura.persistencia.entity.ClienteEntidad;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
@@ -12,9 +11,9 @@ import org.mapstruct.factory.Mappers;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface ClienteMapper {
+public interface ClienteInterfaceMapper {
 
-    TipoDocumentoMapper tipoDocumentoMapper = Mappers.getMapper(TipoDocumentoMapper.class);
+    TipoDocumentoInterfaceMapper TIPO_DOCUMENTO_INTERFACE_MAPPER = Mappers.getMapper(TipoDocumentoInterfaceMapper.class);
 
     @Mappings({
             @Mapping(source = "id", target = "id"),

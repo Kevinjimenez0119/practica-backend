@@ -2,7 +2,7 @@ package com.pragma.customer.infraestructura.persistencia.service.impl;
 
 import com.pragma.customer.dominio.service.ClienteInterfaceService;
 import com.pragma.customer.dominio.modelo.Cliente;
-import com.pragma.customer.infraestructura.mappers.ClienteMapper;
+import com.pragma.customer.infraestructura.mappers.ClienteInterfaceMapper;
 import com.pragma.customer.infraestructura.persistencia.entity.ClienteEntidad;
 import com.pragma.customer.infraestructura.persistencia.entity.TipoDocumentoEntidad;
 import com.pragma.customer.infraestructura.persistencia.repository.ClienteInterfaceRepository;
@@ -36,7 +36,7 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     private TipoDocumentoInterfaceReporsitory tipoDocumentoInterfaceReporsitory;
 
     @Autowired
-    private ClienteMapper clienteMapper;
+    private ClienteInterfaceMapper clienteInterfaceMapper;
 
     @Override
     public void save(Cliente cliente) {
@@ -87,7 +87,7 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     @Override
     public List<Cliente> findAll() {
         try {
-            return clienteMapper.toClienteListDto(clienteInterfaceRepository.findAll());
+            return clienteInterfaceMapper.toClienteListDto(clienteInterfaceRepository.findAll());
         } catch (Exception e) {
             logger.error("Error al listar clientes", e);
         }
@@ -97,7 +97,7 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     @Override
     public Cliente findById(Integer id) {
         try {
-            return clienteMapper.toClienteDto(clienteInterfaceRepository.findById(id).get());
+            return clienteInterfaceMapper.toClienteDto(clienteInterfaceRepository.findById(id).get());
         } catch (Exception e) {
             logger.error("Error al buscar cliente por id", e);
         }
@@ -107,7 +107,7 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     @Override
     public Cliente findByIdentificacion(Integer identificacion) {
         try {
-            return clienteMapper.toClienteDto(clienteInterfaceRepository.findByIdentificacion(identificacion).get());
+            return clienteInterfaceMapper.toClienteDto(clienteInterfaceRepository.findByIdentificacion(identificacion).get());
         } catch (Exception e) {
             logger.error("Error al buscar cliente por identificacion", e);
         }
@@ -127,7 +127,7 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     @Override
     public List<Cliente> findByAge(Integer edad) {
         try {
-            return clienteMapper.toClienteListDto(clienteInterfaceRepository.findByAge(edad));
+            return clienteInterfaceMapper.toClienteListDto(clienteInterfaceRepository.findByAge(edad));
         } catch (Exception e) {
             logger.error("Error al listar cliente por edad", e);
         }
@@ -138,7 +138,7 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     public Page<Cliente> findAllPag(Pageable pageable) {
         try {
             Page<ClienteEntidad> clienteEntidadList = clienteInterfaceRepository.findAll(pageable);
-            List<Cliente> clienteList = clienteMapper.toClienteListDto(clienteEntidadList.toList());
+            List<Cliente> clienteList = clienteInterfaceMapper.toClienteListDto(clienteEntidadList.toList());
             Page<Cliente> clientePageList = new PageImpl<>(clienteList);
             return clientePageList;
         } catch (Exception e) {
