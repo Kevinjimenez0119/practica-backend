@@ -33,14 +33,14 @@ public class EndPointListarPorEdad {
     @GetMapping("/edad/{edad}")
     @ApiOperation("obtiene una lista de los clientes cuya edad sea mayor o igual a el parametro")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 200, message = "OK", response = Cliente.class),
             @ApiResponse(code = 204, message = "no hay ningun cliente que cumpla la condicion")
     })
     public ResponseEntity<?> obtenerPorEdadMayorIgual(
             @PathVariable
             @ApiParam(value = "edad", required = true, example = "20")
                     Integer edad
-    ) throws Exception {
+    ) {
         List<Cliente> clienteList = manejadorCliente.listarPorEdadMayor(edad);
         if(clienteList.isEmpty())
         {

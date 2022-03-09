@@ -5,8 +5,6 @@ import com.pragma.customer.aplicacion.manjeador.ManejadorTipoDocumento;
 import com.pragma.customer.aplicacion.utils.ErrorsUtils;
 import com.pragma.customer.dominio.modelo.Cliente;
 import com.pragma.customer.dominio.modelo.Mensaje;
-import com.pragma.customer.dominio.useCase.cliente.ClienteUseCase;
-import com.pragma.customer.dominio.useCase.tipodocumento.TipoDocumentoUseCase;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -39,7 +37,8 @@ public class EndpointGuardarCliente {
     })
     public ResponseEntity<?> guardarCliente(
             @RequestBody
-            @ApiParam(value = "cliente", required = true) Cliente cliente ) throws Exception {
+            @ApiParam(value = "cliente", required = true) Cliente cliente
+    ) {
         if(manejadorCliente.existeCliente(cliente.getIdentificacion()) == false) {
             if(manejadorTipoDocumento.existeTipo(cliente.getTipoDocumento())) {
                 manejadorCliente.guardar(cliente);
@@ -50,6 +49,5 @@ public class EndpointGuardarCliente {
         } else {
             return new ResponseEntity<>(ErrorsUtils.identificacionYaRegistrada(cliente.getIdentificacion().toString()), HttpStatus.BAD_REQUEST);
         }
-
     }
 }

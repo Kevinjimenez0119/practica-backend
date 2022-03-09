@@ -1,8 +1,9 @@
-package com.pragma.customer.infraestructura.endpoint.clientes;
+package com.pragma.customer.infraestructura.endpoint.tipodocumento;
 
-import com.pragma.customer.aplicacion.manjeador.ManejadorCliente;
+import com.pragma.customer.aplicacion.manjeador.ManejadorTipoDocumento;
 import com.pragma.customer.dominio.modelo.Cliente;
 import com.pragma.customer.dominio.modelo.Mensaje;
+import com.pragma.customer.dominio.modelo.TipoDocumento;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -15,30 +16,31 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/clientes")
+@RequestMapping("/api/tipodocumento")
 @RequiredArgsConstructor
 @Validated
 @CrossOrigin(origins = "*")
-public class EndpointListarClientes {
+public class EndpointListarTiposDeDocumento {
 
     @Autowired
-    private ManejadorCliente manejadorCliente;
+    private ManejadorTipoDocumento manejadorTipoDocumento;
 
     @GetMapping("/listAll")
-    @ApiOperation("obtiene una lista de todos los clientes ")
+    @ApiOperation("obtiene una lista de todos los tipos de documentos")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK", response = Cliente.class),
-            @ApiResponse(code = 204, message = "no hay ningun cliente registrado")
+            @ApiResponse(code = 200, message = "OK", response = TipoDocumento.class),
+            @ApiResponse(code = 204, message = "no hay ningun tipo de documento registrado")
     })
     public ResponseEntity<?> listarClientes() {
-        List<Cliente> clienteList = manejadorCliente.listar();
-        if(clienteList.isEmpty())
+        List<TipoDocumento> tipoDocumentoList = manejadorTipoDocumento.listar();
+        if(tipoDocumentoList.isEmpty())
         {
             return new ResponseEntity<>(new Mensaje("No hay registros"), HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(clienteList, HttpStatus.OK);
+        return new ResponseEntity<>(tipoDocumentoList, HttpStatus.OK);
     }
 }

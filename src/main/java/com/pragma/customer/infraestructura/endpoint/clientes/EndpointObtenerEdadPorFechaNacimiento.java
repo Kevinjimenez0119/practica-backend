@@ -30,15 +30,14 @@ public class EndpointObtenerEdadPorFechaNacimiento {
     @GetMapping("/edad/identificacion/{numero}")
     @ApiOperation("obtiene la edad por la fecha de nacimiento")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 200, message = "OK", response = Integer.class),
             @ApiResponse(code = 404, message = "no se encontro al cliente")
     })
     public ResponseEntity<?> obtenerEdadPorIdentificacion(
             @PathVariable
             @ApiParam(value = "numero de identificacion", required = true, example = "1")
                     Integer numero
-    ) throws Exception {
-
+    ) {
         if(manejadorCliente.existeCliente(numero) == true )
         {
             Cliente cliente = manejadorCliente.buscarPorIdentificacion(numero);
@@ -48,8 +47,5 @@ public class EndpointObtenerEdadPorFechaNacimiento {
             return new ResponseEntity<>(new Mensaje("no hay ningun cliente que con identificacion " + numero ), HttpStatus.NOT_FOUND);
 
         }
-
-
-
     }
 }

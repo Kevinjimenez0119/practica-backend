@@ -32,11 +32,11 @@ public class EndpointListarPaginado {
     @GetMapping("/list")
     @ApiOperation("obtiene una lista de todos los clientes ")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 200, message = "OK", response = Cliente.class),
             @ApiResponse(code = 204, message = "no hay ningun cliente registrado")
     })
     public ResponseEntity<?> listarClientes(
-            @PageableDefault(size = 10, page = 0) Pageable pageable) throws Exception {
+            @PageableDefault(size = 10, page = 0) Pageable pageable) {
         Page<Cliente> clienteList = manejadorCliente.listarPag(pageable);
         if(clienteList.isEmpty())
         {

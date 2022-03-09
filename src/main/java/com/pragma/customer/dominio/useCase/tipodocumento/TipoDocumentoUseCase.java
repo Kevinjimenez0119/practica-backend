@@ -1,7 +1,7 @@
 package com.pragma.customer.dominio.useCase.tipodocumento;
 
+import com.pragma.customer.dominio.modelo.TipoDocumento;
 import com.pragma.customer.dominio.service.TipoDocumentoInterfaceService;
-import com.pragma.customer.infraestructura.persistencia.entity.TipoDocumentoEntidad;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -11,31 +11,35 @@ public class TipoDocumentoUseCase {
 
     private final TipoDocumentoInterfaceService tipoDocumentoInterfaceService;
 
-    public void guardar(TipoDocumentoEntidad tipoDocumentoEntidad){
-        tipoDocumentoInterfaceService.save(tipoDocumentoEntidad);
+    public void guardar(TipoDocumento tipoDocumento){
+        tipoDocumentoInterfaceService.save(tipoDocumento);
     }
 
-    public void eliminar(Integer id) {
-        tipoDocumentoInterfaceService.delete(id);
+    public void actualizar(TipoDocumento tipoDocumento){
+        tipoDocumentoInterfaceService.update(tipoDocumento);
     }
 
-    public List<TipoDocumentoEntidad> listar() {
+    public void eliminar(String tipo) {
+        tipoDocumentoInterfaceService.delete(tipo);
+    }
+
+    public List<TipoDocumento> listar() {
         return tipoDocumentoInterfaceService.findAll();
     }
 
-    public TipoDocumentoEntidad buscarPorId(Integer id) {
-        return tipoDocumentoInterfaceService.findById(id).get();
+    public TipoDocumento buscarPorId(Integer id) {
+        return tipoDocumentoInterfaceService.findById(id);
     }
 
-    public TipoDocumentoEntidad buscarPorIdentificacion(Integer identificacion) {
-        return tipoDocumentoInterfaceService.findById(identificacion).get();
+    public TipoDocumento buscarPorIdentificacion(Integer identificacion) {
+        return tipoDocumentoInterfaceService.findById(identificacion);
     }
 
     public boolean existeTipo(String tipo) {
         return tipoDocumentoInterfaceService.existsByTipoDocumento(tipo);
     }
 
-    public TipoDocumentoEntidad buscarPorTipo(String tipo) {
-        return tipoDocumentoInterfaceService.findByTipoDocumento(tipo).get();
+    public TipoDocumento buscarPorTipo(String tipo) {
+        return tipoDocumentoInterfaceService.findByTipoDocumento(tipo);
     }
 }

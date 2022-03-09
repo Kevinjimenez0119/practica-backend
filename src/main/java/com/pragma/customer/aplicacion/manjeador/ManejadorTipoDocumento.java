@@ -1,5 +1,6 @@
 package com.pragma.customer.aplicacion.manjeador;
 
+import com.pragma.customer.dominio.modelo.TipoDocumento;
 import com.pragma.customer.dominio.useCase.tipodocumento.TipoDocumentoUseCase;
 import com.pragma.customer.infraestructura.persistencia.entity.TipoDocumentoEntidad;
 import lombok.RequiredArgsConstructor;
@@ -11,23 +12,27 @@ public class ManejadorTipoDocumento {
 
     private final TipoDocumentoUseCase tipoDocumentoUseCase;
 
-    public void guardar(TipoDocumentoEntidad tipoDocumentoEntidad){
+    public void guardar(TipoDocumento tipoDocumentoEntidad){
         tipoDocumentoUseCase.guardar(tipoDocumentoEntidad);
     }
 
-    public void eliminar(Integer id) {
-        tipoDocumentoUseCase.eliminar(id);
+    public void actualizar(TipoDocumento tipoDocumento){
+        tipoDocumentoUseCase.actualizar(tipoDocumento);
     }
 
-    public List<TipoDocumentoEntidad> listar() {
+    public void eliminar(String tipo) {
+        tipoDocumentoUseCase.eliminar(tipo);
+    }
+
+    public List<TipoDocumento> listar() {
         return tipoDocumentoUseCase.listar();
     }
 
-    public TipoDocumentoEntidad buscarPorId(Integer id) {
+    public TipoDocumento buscarPorId(Integer id) {
         return tipoDocumentoUseCase.buscarPorId(id);
     }
 
-    public TipoDocumentoEntidad buscarPorIdentificacion(Integer identificacion) {
+    public TipoDocumento buscarPorIdentificacion(Integer identificacion) {
         return tipoDocumentoUseCase.buscarPorIdentificacion(identificacion);
     }
 
@@ -35,7 +40,7 @@ public class ManejadorTipoDocumento {
         return tipoDocumentoUseCase.existeTipo(tipo);
     }
 
-    public TipoDocumentoEntidad buscarPorTipo(String tipo) {
+    public TipoDocumento buscarPorTipo(String tipo) {
         return tipoDocumentoUseCase.buscarPorTipo(tipo);
     }
 }

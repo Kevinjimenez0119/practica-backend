@@ -1,6 +1,7 @@
 package com.pragma.customer.dominio.service;
 
-import com.pragma.customer.infraestructura.persistencia.entity.TipoDocumentoEntidad;
+import com.pragma.customer.dominio.modelo.Cliente;
+import com.pragma.customer.dominio.modelo.TipoDocumento;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,16 +9,18 @@ import java.util.Optional;
 public interface TipoDocumentoInterfaceService {
 
     //CRUD
-    void save(TipoDocumentoEntidad tipoDocumentoEntidad);
+    void save(TipoDocumento tipoDocumento);
 
-    void delete(Integer id);
+    void delete(String tipo);
 
-    List<TipoDocumentoEntidad> findAll();
+    void update(TipoDocumento tipoDocumento);
+
+    List<TipoDocumento> findAll();
 
     //FIND
-    Optional<TipoDocumentoEntidad> findById(Integer id);
+    TipoDocumento findById(Integer id);
 
-    Optional<TipoDocumentoEntidad> findByTipoDocumento(String tipo);
+    TipoDocumento findByTipoDocumento(String tipo);
 
     boolean existsByTipoDocumento(String tipo);
 
