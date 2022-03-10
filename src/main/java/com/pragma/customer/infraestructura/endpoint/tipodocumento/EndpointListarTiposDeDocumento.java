@@ -35,7 +35,7 @@ public class EndpointListarTiposDeDocumento {
             @ApiResponse(code = 200, message = "OK", response = TipoDocumento.class),
             @ApiResponse(code = 204, message = "no hay ningun tipo de documento registrado")
     })
-    public ResponseEntity<?> listarClientes() {
+    public ResponseEntity<?> listarTiposDeDocumentos() {
         List<TipoDocumento> tipoDocumentoList = manejadorTipoDocumento.listar();
         if(tipoDocumentoList.isEmpty())
         {

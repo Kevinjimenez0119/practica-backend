@@ -32,7 +32,7 @@ public class EndpointGuardarTipoDocumento {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "tipo de documento ya registrada")
     })
-    public ResponseEntity<?> guardarCliente(
+    public ResponseEntity<?> guardarTipoDocumento(
             @RequestBody
             @ApiParam(value = "cliente", required = true) TipoDocumento tipoDocumento
             ) {
