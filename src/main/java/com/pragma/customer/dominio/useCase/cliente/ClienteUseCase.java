@@ -1,8 +1,8 @@
 package com.pragma.customer.dominio.useCase.cliente;
 
+import com.pragma.customer.dominio.modelo.ClienteFile;
 import com.pragma.customer.dominio.service.ClienteInterfaceService;
 import com.pragma.customer.dominio.modelo.Cliente;
-import com.pragma.customer.infraestructura.persistencia.entity.ClienteEntidad;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,6 +37,10 @@ public class ClienteUseCase {
 
     public Cliente buscarPorIdentificacion(Integer identificacion) {
         return clienteInterfaceService.findByIdentificacion(identificacion);
+    }
+
+    public ClienteFile buscarPorIdentificacionFile(Integer identificacion) {
+        return clienteInterfaceService.findByIdentificacionFile(identificacion);
     }
 
     public List<Cliente> listarPorEdadMayor(Integer edad) {

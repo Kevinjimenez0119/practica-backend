@@ -1,5 +1,7 @@
 package com.pragma.customer.infraestructura.persistencia.service.impl;
 
+import com.pragma.customer.dominio.modelo.ClienteFile;
+import com.pragma.customer.dominio.modelo.FileImagen;
 import com.pragma.customer.dominio.service.ClienteInterfaceService;
 import com.pragma.customer.dominio.modelo.Cliente;
 import com.pragma.customer.infraestructura.mappers.ClienteInterfaceMapper;
@@ -14,17 +16,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
+@Transactional
 public class ClienteServiceImpl implements ClienteInterfaceService {
 
     Logger logger = LoggerFactory.getLogger(ClienteServiceImpl.class);
@@ -37,6 +38,9 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
 
     @Autowired
     private ClienteInterfaceMapper clienteInterfaceMapper;
+
+    @Autowired
+    private FileImagenServiceImpl fileImagenService;
 
     @Override
     public void save(Cliente cliente) {
@@ -78,6 +82,7 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     public void delete(Integer identificacion) {
         try {
             Optional<ClienteEntidad> clienteEntidad = clienteInterfaceRepository.findById(identificacion);
+            fileImagenService.delete(identificacion);
             clienteInterfaceRepository.delete(clienteEntidad.get());
         } catch (Exception e) {
             logger.error("Error al eliminar el cliente", e);
@@ -102,6 +107,41 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
             logger.error("Error al buscar cliente por id", e);
         }
         return null;
+    }
+
+    @Override
+    public ClienteFile findByIdentificacionFile(Integer identificacion) {
+        try {
+            Cliente cliente = clienteInterfaceMapper.toClienteDto(clienteInterfaceRepository.findByIdentificacion(identificacion).get());
+            FileImagen fileImagen = fileImagenService.findByNumeroIdentificacion(identificacion);
+            if(fileImagen == null) {
+                fileImagen = FileImagen.builder()
+                        .fileName("")
+                        .fileType("")
+                        .base64("")
+                        .identificacion(cliente.getIdentificacion()).build();
+                return maptoFotocliente(cliente, fileImagen);
+            }
+            return maptoFotocliente(cliente, fileImagen);
+        } catch (Exception e) {
+            logger.error("Error al buscar cliente por id con imagen", e);
+        }
+        return null;
+    }
+
+    private ClienteFile maptoFotocliente(Cliente cliente, FileImagen fileImagen)
+    {
+        ClienteFile clienteFile = ClienteFile.builder()
+                .id(cliente.getId())
+                .nombres(cliente.getNombres())
+                .apellidos(cliente.getApellidos())
+                .identificacion(cliente.getIdentificacion())
+                .tipoDocumento(cliente.getTipoDocumento())
+                .edad(cliente.getEdad())
+                .fechaNacimiento(cliente.getFechaNacimiento())
+                .ciudadNacimiento(cliente.getCiudadNacimiento())
+                .fileImagen(fileImagen).build();
+        return clienteFile;
     }
 
     @Override

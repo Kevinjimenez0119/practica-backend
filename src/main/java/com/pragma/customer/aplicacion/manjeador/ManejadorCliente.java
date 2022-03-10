@@ -1,6 +1,7 @@
 package com.pragma.customer.aplicacion.manjeador;
 
 import com.pragma.customer.dominio.modelo.Cliente;
+import com.pragma.customer.dominio.modelo.ClienteFile;
 import com.pragma.customer.dominio.useCase.cliente.ClienteUseCase;
 import com.pragma.customer.infraestructura.persistencia.entity.ClienteEntidad;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,10 @@ public class ManejadorCliente {
 
     public Cliente buscarPorIdentificacion(Integer identificacion) {
         return clienteUseCase.buscarPorIdentificacion(identificacion);
+    }
+
+    public ClienteFile buscarPorIdentificacionFile(Integer identificacion) {
+        return clienteUseCase.buscarPorIdentificacionFile(identificacion);
     }
 
     public List<Cliente> listarPorEdadMayor(Integer edad) {
