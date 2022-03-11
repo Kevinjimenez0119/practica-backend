@@ -1,11 +1,11 @@
 package com.pragma.customer.dominio.service;
 
-import com.pragma.customer.dominio.modelo.FileImagen;
+import com.pragma.customer.dominio.modelo.FileImagenDto;
 
 public interface FileImagenServiceClient {
 
     boolean delete(Integer identificacion);
 
-    FileImagen findByNumeroIdentificacion(Integer identificacion);
+    FileImagenDto findByNumeroIdentificacion(Integer identificacion);
 
 }

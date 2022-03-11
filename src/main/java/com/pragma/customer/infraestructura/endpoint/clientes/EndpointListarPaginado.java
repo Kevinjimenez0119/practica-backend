@@ -1,7 +1,7 @@
 package com.pragma.customer.infraestructura.endpoint.clientes;
 
 import com.pragma.customer.aplicacion.manjeador.ManejadorCliente;
-import com.pragma.customer.dominio.modelo.Cliente;
+import com.pragma.customer.dominio.modelo.ClienteDto;
 import com.pragma.customer.dominio.modelo.Mensaje;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -32,12 +32,12 @@ public class EndpointListarPaginado {
     @GetMapping("/list")
     @ApiOperation("obtiene una lista de todos los clientes ")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK", response = Cliente.class),
+            @ApiResponse(code = 200, message = "OK", response = ClienteDto.class),
             @ApiResponse(code = 204, message = "no hay ningun cliente registrado")
     })
     public ResponseEntity<?> listarClientes(
             @PageableDefault(size = 10, page = 0) Pageable pageable) {
-        Page<Cliente> clienteList = manejadorCliente.listarPag(pageable);
+        Page<ClienteDto> clienteList = manejadorCliente.listarPag(pageable);
         if(clienteList.isEmpty())
         {
             return new ResponseEntity<>(new Mensaje("No hay registros"), HttpStatus.NO_CONTENT);

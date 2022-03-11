@@ -1,9 +1,8 @@
 package com.pragma.customer.aplicacion.manjeador;
 
-import com.pragma.customer.dominio.modelo.Cliente;
-import com.pragma.customer.dominio.modelo.ClienteFile;
+import com.pragma.customer.dominio.modelo.ClienteDto;
+import com.pragma.customer.dominio.modelo.ClienteFileDto;
 import com.pragma.customer.dominio.useCase.cliente.ClienteUseCase;
-import com.pragma.customer.infraestructura.persistencia.entity.ClienteEntidad;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,11 +16,11 @@ public class ManejadorCliente {
 
     private final ClienteUseCase clienteUseCase;
 
-    public void guardar(Cliente cliente) {
+    public void guardar(ClienteDto cliente) {
         clienteUseCase.guardar(cliente);
     }
 
-    public void actualizar(Cliente cliente) {
+    public void actualizar(ClienteDto cliente) {
         clienteUseCase.actualizar(cliente);
     }
 
@@ -29,23 +28,23 @@ public class ManejadorCliente {
         clienteUseCase.eliminar(id);
     }
 
-    public List<Cliente> listar() {
+    public List<ClienteDto> listar() {
         return clienteUseCase.listar();
     }
 
-    public Cliente buscarPorId(Integer id) {
+    public ClienteDto buscarPorId(Integer id) {
         return clienteUseCase.buscarPorId(id);
     }
 
-    public Cliente buscarPorIdentificacion(Integer identificacion) {
+    public ClienteDto buscarPorIdentificacion(Integer identificacion) {
         return clienteUseCase.buscarPorIdentificacion(identificacion);
     }
 
-    public ClienteFile buscarPorIdentificacionFile(Integer identificacion) {
+    public ClienteFileDto buscarPorIdentificacionFile(Integer identificacion) {
         return clienteUseCase.buscarPorIdentificacionFile(identificacion);
     }
 
-    public List<Cliente> listarPorEdadMayor(Integer edad) {
+    public List<ClienteDto> listarPorEdadMayor(Integer edad) {
         return clienteUseCase.listarPorEdadMayor(edad);
     }
 
@@ -53,7 +52,7 @@ public class ManejadorCliente {
         return clienteUseCase.existeCliente(identificacion);
     }
 
-    public Page<Cliente> listarPag(Pageable pageable) {
+    public Page<ClienteDto> listarPag(Pageable pageable) {
         return clienteUseCase.listarPag(pageable);
     }
 

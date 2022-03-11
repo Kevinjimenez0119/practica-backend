@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TipoDocumento {
+public class TipoDocumentoDto {
 
     @ApiModelProperty(notes = "id autoincremental")
     private Integer id;

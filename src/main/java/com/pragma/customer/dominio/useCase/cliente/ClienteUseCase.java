@@ -1,8 +1,8 @@
 package com.pragma.customer.dominio.useCase.cliente;
 
-import com.pragma.customer.dominio.modelo.ClienteFile;
+import com.pragma.customer.dominio.modelo.ClienteDto;
+import com.pragma.customer.dominio.modelo.ClienteFileDto;
 import com.pragma.customer.dominio.service.ClienteInterfaceService;
-import com.pragma.customer.dominio.modelo.Cliente;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,10 +16,10 @@ public class ClienteUseCase {
 
     private final ClienteInterfaceService clienteInterfaceService;
 
-    public void guardar(Cliente cliente) {
+    public void guardar(ClienteDto cliente) {
         clienteInterfaceService.save(cliente);
     }
-    public void actualizar(Cliente cliente) {
+    public void actualizar(ClienteDto cliente) {
         clienteInterfaceService.update(cliente);
     }
 
@@ -27,23 +27,23 @@ public class ClienteUseCase {
         clienteInterfaceService.delete(id);
     }
 
-    public List<Cliente> listar() {
+    public List<ClienteDto> listar() {
         return clienteInterfaceService.findAll();
     }
 
-    public Cliente buscarPorId(Integer id) {
+    public ClienteDto buscarPorId(Integer id) {
         return clienteInterfaceService.findById(id);
     }
 
-    public Cliente buscarPorIdentificacion(Integer identificacion) {
+    public ClienteDto buscarPorIdentificacion(Integer identificacion) {
         return clienteInterfaceService.findByIdentificacion(identificacion);
     }
 
-    public ClienteFile buscarPorIdentificacionFile(Integer identificacion) {
+    public ClienteFileDto buscarPorIdentificacionFile(Integer identificacion) {
         return clienteInterfaceService.findByIdentificacionFile(identificacion);
     }
 
-    public List<Cliente> listarPorEdadMayor(Integer edad) {
+    public List<ClienteDto> listarPorEdadMayor(Integer edad) {
         return clienteInterfaceService.findByAge(edad);
     }
 
@@ -51,7 +51,7 @@ public class ClienteUseCase {
         return clienteInterfaceService.existsByIdentificacion(identificacion);
     }
 
-    public Page<Cliente> listarPag(Pageable pageable) {
+    public Page<ClienteDto> listarPag(Pageable pageable) {
         return clienteInterfaceService.findAllPag(pageable);
     }
 

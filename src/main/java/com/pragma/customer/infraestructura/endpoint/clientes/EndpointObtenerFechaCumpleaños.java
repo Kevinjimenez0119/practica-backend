@@ -1,10 +1,8 @@
 package com.pragma.customer.infraestructura.endpoint.clientes;
 
 import com.pragma.customer.aplicacion.manjeador.ManejadorCliente;
-import com.pragma.customer.aplicacion.manjeador.ManejadorTipoDocumento;
-import com.pragma.customer.dominio.modelo.Cliente;
+import com.pragma.customer.dominio.modelo.ClienteDto;
 import com.pragma.customer.dominio.modelo.Mensaje;
-import com.pragma.customer.infraestructura.persistencia.entity.ClienteEntidad;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -42,7 +40,7 @@ public class EndpointObtenerFechaCumpleaños {
     ) {
         if(manejadorCliente.existeCliente(numero) == true )
         {
-            Cliente cliente = manejadorCliente.buscarPorIdentificacion(numero);
+            ClienteDto cliente = manejadorCliente.buscarPorIdentificacion(numero);
             LocalDate birthDay = manejadorCliente.birthDay(cliente.getFechaNacimiento());
             return new ResponseEntity<>(birthDay, HttpStatus.OK);
         } else {

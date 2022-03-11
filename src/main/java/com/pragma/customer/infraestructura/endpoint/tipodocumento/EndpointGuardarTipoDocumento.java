@@ -2,9 +2,8 @@ package com.pragma.customer.infraestructura.endpoint.tipodocumento;
 
 import com.pragma.customer.aplicacion.manjeador.ManejadorTipoDocumento;
 import com.pragma.customer.aplicacion.utils.ErrorsUtils;
-import com.pragma.customer.dominio.modelo.Cliente;
 import com.pragma.customer.dominio.modelo.Mensaje;
-import com.pragma.customer.dominio.modelo.TipoDocumento;
+import com.pragma.customer.dominio.modelo.TipoDocumentoDto;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -34,14 +33,14 @@ public class EndpointGuardarTipoDocumento {
     })
     public ResponseEntity<?> guardarTipoDocumento(
             @RequestBody
-            @ApiParam(value = "cliente", required = true) TipoDocumento tipoDocumento
+            @ApiParam(value = "cliente", required = true) TipoDocumentoDto tipoDocumentoDto
             ) {
-        if(manejadorTipoDocumento.existeTipo(tipoDocumento.getTipoDocumento()) == false) {
-                manejadorTipoDocumento.guardar(tipoDocumento);
-                return new ResponseEntity<>(new Mensaje("tipo de documento " + tipoDocumento.getTipoDocumento() + " guardado"), HttpStatus.CREATED);
+        if(manejadorTipoDocumento.existeTipo(tipoDocumentoDto.getTipoDocumento()) == false) {
+                manejadorTipoDocumento.guardar(tipoDocumentoDto);
+                return new ResponseEntity<>(new Mensaje("tipo de documento " + tipoDocumentoDto.getTipoDocumento() + " guardado"), HttpStatus.CREATED);
 
         } else {
-            return new ResponseEntity<>(ErrorsUtils.tipoIdentificacionRegistrada(tipoDocumento.getTipoDocumento()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(ErrorsUtils.tipoIdentificacionRegistrada(tipoDocumentoDto.getTipoDocumento()), HttpStatus.BAD_REQUEST);
         }
     }
 }

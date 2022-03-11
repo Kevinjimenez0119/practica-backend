@@ -2,8 +2,8 @@ package com.pragma.customer.infraestructura.endpoint.clientes;
 
 import com.pragma.customer.aplicacion.manjeador.ManejadorCliente;
 import com.pragma.customer.aplicacion.manjeador.ManejadorTipoDocumento;
-import com.pragma.customer.dominio.modelo.Cliente;
-import com.pragma.customer.dominio.modelo.ClienteFile;
+import com.pragma.customer.dominio.modelo.ClienteDto;
+import com.pragma.customer.dominio.modelo.ClienteFileDto;
 import com.pragma.customer.dominio.modelo.Mensaje;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -32,7 +32,7 @@ public class EndpointObtenerClienteConFile {
     @GetMapping("/identificacionfile/{tipo}/{numero}")
     @ApiOperation("obtiene un cliente dado su tipo y numero de identificacion")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK",response = Cliente.class),
+            @ApiResponse(code = 200, message = "OK",response = ClienteDto.class),
             @ApiResponse(code = 404, message = "no se encontro al cliente con el tipo de identificacion")
     })
     public ResponseEntity<?> obtenerPorIdentificacion(
@@ -45,8 +45,8 @@ public class EndpointObtenerClienteConFile {
     ) {
         if(manejadorCliente.existeCliente(numero) == true && manejadorTipoDocumento.existeTipo(tipo) == true)
         {
-            ClienteFile clienteFile = manejadorCliente.buscarPorIdentificacionFile(numero);
-            if (clienteFile.getTipoDocumento() == tipo) {
+            ClienteFileDto clienteFile = manejadorCliente.buscarPorIdentificacionFile(numero);
+            if (clienteFile.getTipoDocumento().equals(tipo)) {
                 return new ResponseEntity(clienteFile, HttpStatus.OK);
             }
             return new ResponseEntity<>(new Mensaje("no hay ningun cliente que con identificacion " + numero + " con tipo de documento " + tipo), HttpStatus.NOT_FOUND);

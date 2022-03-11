@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @Component
-@FeignClient(name = "FotoClient", url = "http://localhost:8888/api/files")
+@FeignClient(name = "FileImagenClient", url = "http://localhost:8888/api/files")
 public interface FileImagenInterfaceClient {
 
     @GetMapping(value = "/identificacion/{numero}")

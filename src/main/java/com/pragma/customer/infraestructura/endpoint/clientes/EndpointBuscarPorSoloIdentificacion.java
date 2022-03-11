@@ -1,6 +1,7 @@
 package com.pragma.customer.infraestructura.endpoint.clientes;
 
 import com.pragma.customer.aplicacion.manjeador.ManejadorCliente;
+import com.pragma.customer.aplicacion.manjeador.ManejadorTipoDocumento;
 import com.pragma.customer.dominio.modelo.ClienteDto;
 import com.pragma.customer.dominio.modelo.Mensaje;
 import io.swagger.annotations.ApiOperation;
@@ -19,29 +20,29 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Validated
 @CrossOrigin(origins = "*")
-public class EndpointObtenerEdadPorFechaNacimiento {
+public class EndpointBuscarPorSoloIdentificacion {
 
     @Autowired
     private ManejadorCliente manejadorCliente;
 
-    @GetMapping("/edad/identificacion/{numero}")
-    @ApiOperation("obtiene la edad por la fecha de nacimiento")
+    @GetMapping("/identificacion/{numero}")
+    @ApiOperation("obtiene un cliente dado su numero de identificacion")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK", response = Integer.class),
+            @ApiResponse(code = 200, message = "OK",response = ClienteDto.class),
             @ApiResponse(code = 404, message = "no se encontro al cliente")
     })
-    public ResponseEntity<?> obtenerEdadPorIdentificacion(
+    public ResponseEntity<?> obtenerPorIdentificacion(
             @PathVariable
             @ApiParam(value = "numero de identificacion", required = true, example = "1")
                     Integer numero
     ) {
-        if(manejadorCliente.existeCliente(numero) == true )
+        if(manejadorCliente.existeCliente(numero) == true)
         {
             ClienteDto cliente = manejadorCliente.buscarPorIdentificacion(numero);
-            Integer edad = manejadorCliente.edadPorFecha(cliente.getFechaNacimiento());
-            return new ResponseEntity<>(edad, HttpStatus.OK);
+            return new ResponseEntity(cliente, HttpStatus.OK);
+
         }else{
-            return new ResponseEntity<>(new Mensaje("no hay ningun cliente que con identificacion " + numero ), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new Mensaje("no hay ningun cliente que con identificacion " + numero ), HttpStatus.NO_CONTENT);
 
         }
     }

@@ -2,9 +2,8 @@ package com.pragma.customer.infraestructura.endpoint.tipodocumento;
 
 import com.pragma.customer.aplicacion.manjeador.ManejadorTipoDocumento;
 import com.pragma.customer.aplicacion.utils.ErrorsUtils;
-import com.pragma.customer.dominio.modelo.Cliente;
 import com.pragma.customer.dominio.modelo.Mensaje;
-import com.pragma.customer.dominio.modelo.TipoDocumento;
+import com.pragma.customer.dominio.modelo.TipoDocumentoDto;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -35,14 +34,14 @@ public class EndpointActualizarTipoDocumento {
     public ResponseEntity<?> actualizar(
             @RequestBody
             @ApiParam(value = "cliente", required = true)
-                    TipoDocumento tipoDocumento
+                    TipoDocumentoDto tipoDocumentoDto
     ) {
-        if(manejadorTipoDocumento.existeTipo(tipoDocumento.getTipoDocumento()) == true) {
-            manejadorTipoDocumento.actualizar(tipoDocumento);
-            return new ResponseEntity<>(new Mensaje("tipo de documento " + tipoDocumento.getTipoDocumento() + " actualizado"), HttpStatus.OK);
+        if(manejadorTipoDocumento.existeTipo(tipoDocumentoDto.getTipoDocumento()) == true) {
+            manejadorTipoDocumento.actualizar(tipoDocumentoDto);
+            return new ResponseEntity<>(new Mensaje("tipo de documento " + tipoDocumentoDto.getTipoDocumento() + " actualizado"), HttpStatus.OK);
 
         }else {
-            return new ResponseEntity<>(ErrorsUtils.tipoIdentificacionNoRegistrada(tipoDocumento.getTipoDocumento()), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(ErrorsUtils.tipoIdentificacionNoRegistrada(tipoDocumentoDto.getTipoDocumento()), HttpStatus.NOT_FOUND);
         }
     }
 }

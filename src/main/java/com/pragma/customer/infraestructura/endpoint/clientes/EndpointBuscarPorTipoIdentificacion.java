@@ -2,7 +2,7 @@ package com.pragma.customer.infraestructura.endpoint.clientes;
 
 import com.pragma.customer.aplicacion.manjeador.ManejadorCliente;
 import com.pragma.customer.aplicacion.manjeador.ManejadorTipoDocumento;
-import com.pragma.customer.dominio.modelo.Cliente;
+import com.pragma.customer.dominio.modelo.ClienteDto;
 import com.pragma.customer.dominio.modelo.Mensaje;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Validated
 @CrossOrigin(origins = "*")
-public class EndPointBuscarPorTipoIdentificacion {
+public class EndpointBuscarPorTipoIdentificacion {
 
     @Autowired
     private ManejadorCliente manejadorCliente;
@@ -31,7 +31,7 @@ public class EndPointBuscarPorTipoIdentificacion {
     @GetMapping("/identificacion/{tipo}/{numero}")
     @ApiOperation("obtiene un cliente dado su tipo y numero de identificacion")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK",response = Cliente.class),
+            @ApiResponse(code = 200, message = "OK",response = ClienteDto.class),
             @ApiResponse(code = 404, message = "no se encontro al cliente con el tipo de identificacion")
     })
     public ResponseEntity<?> obtenerPorIdentificacion(
@@ -44,7 +44,7 @@ public class EndPointBuscarPorTipoIdentificacion {
     ) {
         if(manejadorCliente.existeCliente(numero) == true && manejadorTipoDocumento.existeTipo(tipo) == true)
         {
-            Cliente cliente = manejadorCliente.buscarPorIdentificacion(numero);
+            ClienteDto cliente = manejadorCliente.buscarPorIdentificacion(numero);
             return new ResponseEntity(cliente, HttpStatus.OK);
 
         }else{

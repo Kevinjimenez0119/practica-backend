@@ -1,6 +1,6 @@
 package com.pragma.customer.infraestructura.mappers;
 
-import com.pragma.customer.dominio.modelo.Cliente;
+import com.pragma.customer.dominio.modelo.ClienteDto;
 import com.pragma.customer.infraestructura.persistencia.entity.ClienteEntidad;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
@@ -25,13 +25,13 @@ public interface ClienteInterfaceMapper {
             @Mapping(source = "identificacion", target = "identificacion"),
             @Mapping(source = "tipoDocumentoEntidad.tipoDocumento", target = "tipoDocumento")
     })
-    Cliente toClienteDto(ClienteEntidad clienteEntidad);
+    ClienteDto toClienteDto(ClienteEntidad clienteEntidad);
 
-    List<Cliente> toClienteListDto(List<ClienteEntidad> clienteEntidadList);
-
-    @InheritInverseConfiguration
-    ClienteEntidad toClienteEntidad(Cliente cliente);
+    List<ClienteDto> toClienteListDto(List<ClienteEntidad> clienteEntidadList);
 
     @InheritInverseConfiguration
-    List<ClienteEntidad> toClienteListEntidad(List<Cliente> cliente);
+    ClienteEntidad toClienteEntidad(ClienteDto cliente);
+
+    @InheritInverseConfiguration
+    List<ClienteEntidad> toClienteListEntidad(List<ClienteDto> cliente);
 }

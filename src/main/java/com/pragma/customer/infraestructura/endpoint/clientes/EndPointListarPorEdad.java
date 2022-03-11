@@ -1,11 +1,8 @@
 package com.pragma.customer.infraestructura.endpoint.clientes;
 
 import com.pragma.customer.aplicacion.manjeador.ManejadorCliente;
-import com.pragma.customer.aplicacion.manjeador.ManejadorTipoDocumento;
 import com.pragma.customer.aplicacion.utils.ErrorsUtils;
-import com.pragma.customer.dominio.modelo.Cliente;
-import com.pragma.customer.dominio.useCase.cliente.ClienteUseCase;
-import com.pragma.customer.infraestructura.persistencia.entity.ClienteEntidad;
+import com.pragma.customer.dominio.modelo.ClienteDto;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -17,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -33,7 +29,7 @@ public class EndPointListarPorEdad {
     @GetMapping("/edad/{edad}")
     @ApiOperation("obtiene una lista de los clientes cuya edad sea mayor o igual a el parametro")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK", response = Cliente.class),
+            @ApiResponse(code = 200, message = "OK", response = ClienteDto.class),
             @ApiResponse(code = 204, message = "no hay ningun cliente que cumpla la condicion")
     })
     public ResponseEntity<?> obtenerPorEdadMayorIgual(
@@ -41,7 +37,7 @@ public class EndPointListarPorEdad {
             @ApiParam(value = "edad", required = true, example = "20")
                     Integer edad
     ) {
-        List<Cliente> clienteList = manejadorCliente.listarPorEdadMayor(edad);
+        List<ClienteDto> clienteList = manejadorCliente.listarPorEdadMayor(edad);
         if(clienteList.isEmpty())
         {
             return new ResponseEntity<>(ErrorsUtils.sinClientesPorEdad(edad), HttpStatus.NO_CONTENT);

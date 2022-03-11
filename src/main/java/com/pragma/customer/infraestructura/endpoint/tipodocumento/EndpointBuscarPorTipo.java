@@ -2,10 +2,7 @@ package com.pragma.customer.infraestructura.endpoint.tipodocumento;
 
 import com.pragma.customer.aplicacion.manjeador.ManejadorTipoDocumento;
 import com.pragma.customer.aplicacion.utils.ErrorsUtils;
-import com.pragma.customer.dominio.modelo.Cliente;
-import com.pragma.customer.dominio.modelo.Mensaje;
-import com.pragma.customer.dominio.modelo.TipoDocumento;
-import com.pragma.customer.infraestructura.persistencia.entity.ClienteEntidad;
+import com.pragma.customer.dominio.modelo.TipoDocumentoDto;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -30,7 +27,7 @@ public class EndpointBuscarPorTipo {
     @GetMapping("/tipodocumento/{tipo}")
     @ApiOperation("obtiene el tipo de documento por la palabra")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK",response = TipoDocumento.class),
+            @ApiResponse(code = 200, message = "OK",response = TipoDocumentoDto.class),
             @ApiResponse(code = 404, message = "no se encontro el tipo de documento")
     })
     public ResponseEntity<?> obtenerPorIdentificacion(
@@ -41,8 +38,8 @@ public class EndpointBuscarPorTipo {
 
         if(manejadorTipoDocumento.existeTipo(tipo) == true)
         {
-            TipoDocumento tipoDocumento = manejadorTipoDocumento.buscarPorTipo(tipo);
-            return new ResponseEntity(tipoDocumento, HttpStatus.OK);
+            TipoDocumentoDto tipoDocumentoDto = manejadorTipoDocumento.buscarPorTipo(tipo);
+            return new ResponseEntity(tipoDocumentoDto, HttpStatus.OK);
 
         } else {
             return new ResponseEntity<>(ErrorsUtils.tipoIdentificacionNoRegistrada(tipo), HttpStatus.NOT_FOUND);

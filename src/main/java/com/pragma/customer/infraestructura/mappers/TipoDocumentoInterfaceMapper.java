@@ -1,6 +1,6 @@
 package com.pragma.customer.infraestructura.mappers;
 
-import com.pragma.customer.dominio.modelo.TipoDocumento;
+import com.pragma.customer.dominio.modelo.TipoDocumentoDto;
 import com.pragma.customer.infraestructura.persistencia.entity.TipoDocumentoEntidad;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
@@ -17,13 +17,13 @@ public interface TipoDocumentoInterfaceMapper {
             @Mapping(source = "id", target = "id"),
             @Mapping(source = "tipoDocumento", target = "tipoDocumento")
     })
-    TipoDocumento toTipoDocumentoDto(TipoDocumentoEntidad tipoDocumentoEntidad);
+    TipoDocumentoDto toTipoDocumentoDto(TipoDocumentoEntidad tipoDocumentoEntidad);
 
-    List<TipoDocumento> toTipoDocumentoListDto(List<TipoDocumentoEntidad> tipoDocumentoEntidad);
-
-    @InheritInverseConfiguration
-    TipoDocumentoEntidad toTipoDocumentoEntidad(TipoDocumento tipoDocumento);
+    List<TipoDocumentoDto> toTipoDocumentoListDto(List<TipoDocumentoEntidad> tipoDocumentoEntidad);
 
     @InheritInverseConfiguration
-    List<TipoDocumentoEntidad> toTipoDocumentoListEntidad(List<TipoDocumento> tipoDocumento);
+    TipoDocumentoEntidad toTipoDocumentoEntidad(TipoDocumentoDto tipoDocumentoDto);
+
+    @InheritInverseConfiguration
+    List<TipoDocumentoEntidad> toTipoDocumentoListEntidad(List<TipoDocumentoDto> tipoDocumentoDto);
 }

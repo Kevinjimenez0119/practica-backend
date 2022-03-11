@@ -1,7 +1,7 @@
 package com.pragma.customer.infraestructura.endpoint.clientes;
 
 import com.pragma.customer.aplicacion.manjeador.ManejadorCliente;
-import com.pragma.customer.dominio.modelo.Cliente;
+import com.pragma.customer.dominio.modelo.ClienteDto;
 import com.pragma.customer.dominio.modelo.Mensaje;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -30,11 +30,11 @@ public class EndpointListarClientes {
     @GetMapping("/listAll")
     @ApiOperation("obtiene una lista de todos los clientes ")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK", response = Cliente.class),
+            @ApiResponse(code = 200, message = "OK", response = ClienteDto.class),
             @ApiResponse(code = 204, message = "no hay ningun cliente registrado")
     })
     public ResponseEntity<?> listarClientes() {
-        List<Cliente> clienteList = manejadorCliente.listar();
+        List<ClienteDto> clienteList = manejadorCliente.listar();
         if(clienteList.isEmpty())
         {
             return new ResponseEntity<>(new Mensaje("No hay registros"), HttpStatus.NO_CONTENT);

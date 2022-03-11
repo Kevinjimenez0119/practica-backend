@@ -1,9 +1,8 @@
 package com.pragma.customer.infraestructura.endpoint.tipodocumento;
 
 import com.pragma.customer.aplicacion.manjeador.ManejadorTipoDocumento;
-import com.pragma.customer.dominio.modelo.Cliente;
 import com.pragma.customer.dominio.modelo.Mensaje;
-import com.pragma.customer.dominio.modelo.TipoDocumento;
+import com.pragma.customer.dominio.modelo.TipoDocumentoDto;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -32,15 +31,15 @@ public class EndpointListarTiposDeDocumento {
     @GetMapping("/listAll")
     @ApiOperation("obtiene una lista de todos los tipos de documentos")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK", response = TipoDocumento.class),
+            @ApiResponse(code = 200, message = "OK", response = TipoDocumentoDto.class),
             @ApiResponse(code = 204, message = "no hay ningun tipo de documento registrado")
     })
     public ResponseEntity<?> listarTiposDeDocumentos() {
-        List<TipoDocumento> tipoDocumentoList = manejadorTipoDocumento.listar();
-        if(tipoDocumentoList.isEmpty())
+        List<TipoDocumentoDto> tipoDocumentoDtoList = manejadorTipoDocumento.listar();
+        if(tipoDocumentoDtoList.isEmpty())
         {
             return new ResponseEntity<>(new Mensaje("No hay registros"), HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(tipoDocumentoList, HttpStatus.OK);
+        return new ResponseEntity<>(tipoDocumentoDtoList, HttpStatus.OK);
     }
 }

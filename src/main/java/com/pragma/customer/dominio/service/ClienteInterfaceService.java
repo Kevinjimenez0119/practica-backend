@@ -1,7 +1,7 @@
 package com.pragma.customer.dominio.service;
 
-import com.pragma.customer.dominio.modelo.Cliente;
-import com.pragma.customer.dominio.modelo.ClienteFile;
+import com.pragma.customer.dominio.modelo.ClienteDto;
+import com.pragma.customer.dominio.modelo.ClienteFileDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -12,30 +12,30 @@ import java.util.List;
 public interface ClienteInterfaceService {
 
     //CRUD
-    void save(Cliente cliente);
+    void save(ClienteDto cliente);
 
-    void update(Cliente cliente);
+    void update(ClienteDto cliente);
 
     void delete(Integer id);
 
-    List<Cliente> findAll();
+    List<ClienteDto> findAll();
 
     //FIND
-    Cliente findById(Integer id);
+    ClienteDto findById(Integer id);
 
-    Cliente findByIdentificacion(Integer identificacion);
+    ClienteDto findByIdentificacion(Integer identificacion);
 
-    ClienteFile findByIdentificacionFile(Integer identificacion);
+    ClienteFileDto findByIdentificacionFile(Integer identificacion);
 
     boolean existsByIdentificacion(Integer id);
 
-    List<Cliente> findByAge(Integer edad);
+    List<ClienteDto> findByAge(Integer edad);
 
     //SORTING
-    Page<Cliente> findAllPag(Pageable pageable);
+    Page<ClienteDto> findAllPag(Pageable pageable);
 
     //LOGIC
-    boolean validateClient(Cliente cliente);
+    boolean validateClient(ClienteDto cliente);
 
     Integer getAgeByDate(Date fechaNacimiento);
 

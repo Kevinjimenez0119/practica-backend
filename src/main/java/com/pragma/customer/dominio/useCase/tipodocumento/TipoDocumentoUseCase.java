@@ -1,6 +1,6 @@
 package com.pragma.customer.dominio.useCase.tipodocumento;
 
-import com.pragma.customer.dominio.modelo.TipoDocumento;
+import com.pragma.customer.dominio.modelo.TipoDocumentoDto;
 import com.pragma.customer.dominio.service.TipoDocumentoInterfaceService;
 import lombok.RequiredArgsConstructor;
 
@@ -11,27 +11,27 @@ public class TipoDocumentoUseCase {
 
     private final TipoDocumentoInterfaceService tipoDocumentoInterfaceService;
 
-    public void guardar(TipoDocumento tipoDocumento){
-        tipoDocumentoInterfaceService.save(tipoDocumento);
+    public void guardar(TipoDocumentoDto tipoDocumentoDto){
+        tipoDocumentoInterfaceService.save(tipoDocumentoDto);
     }
 
-    public void actualizar(TipoDocumento tipoDocumento){
-        tipoDocumentoInterfaceService.update(tipoDocumento);
+    public void actualizar(TipoDocumentoDto tipoDocumentoDto){
+        tipoDocumentoInterfaceService.update(tipoDocumentoDto);
     }
 
     public void eliminar(String tipo) {
         tipoDocumentoInterfaceService.delete(tipo);
     }
 
-    public List<TipoDocumento> listar() {
+    public List<TipoDocumentoDto> listar() {
         return tipoDocumentoInterfaceService.findAll();
     }
 
-    public TipoDocumento buscarPorId(Integer id) {
+    public TipoDocumentoDto buscarPorId(Integer id) {
         return tipoDocumentoInterfaceService.findById(id);
     }
 
-    public TipoDocumento buscarPorIdentificacion(Integer identificacion) {
+    public TipoDocumentoDto buscarPorIdentificacion(Integer identificacion) {
         return tipoDocumentoInterfaceService.findById(identificacion);
     }
 
@@ -39,7 +39,7 @@ public class TipoDocumentoUseCase {
         return tipoDocumentoInterfaceService.existsByTipoDocumento(tipo);
     }
 
-    public TipoDocumento buscarPorTipo(String tipo) {
+    public TipoDocumentoDto buscarPorTipo(String tipo) {
         return tipoDocumentoInterfaceService.findByTipoDocumento(tipo);
     }
 }

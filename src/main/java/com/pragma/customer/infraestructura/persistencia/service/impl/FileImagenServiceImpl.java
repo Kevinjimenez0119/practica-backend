@@ -1,6 +1,6 @@
 package com.pragma.customer.infraestructura.persistencia.service.impl;
 
-import com.pragma.customer.dominio.modelo.FileImagen;
+import com.pragma.customer.dominio.modelo.FileImagenDto;
 import com.pragma.customer.dominio.service.FileImagenServiceClient;
 import com.pragma.customer.infraestructura.clientefeign.FileImagenInterfaceClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,23 +27,23 @@ public class FileImagenServiceImpl implements FileImagenServiceClient {
     }
 
     @Override
-    public FileImagen findByNumeroIdentificacion(Integer identificacion){
+    public FileImagenDto findByNumeroIdentificacion(Integer identificacion){
         ResponseEntity<Map<String, Object>> clienteResponseEntity = fileImagenInterfaceClient.findByNumeroIdentificacion(identificacion);
         if (clienteResponseEntity.getStatusCodeValue() != 200) {
             return null;
         }
-        FileImagen fileImagen = maptoFotocliente(clienteResponseEntity.getBody());
-        return fileImagen;
+        FileImagenDto fileImagenDto = maptoFotocliente(clienteResponseEntity.getBody());
+        return fileImagenDto;
     }
 
-    private FileImagen maptoFotocliente(Map<String, Object> fileImagenmap)
+    private FileImagenDto maptoFotocliente(Map<String, Object> fileImagenmap)
     {
-        FileImagen fileImagen = FileImagen.builder()
+        FileImagenDto fileImagenDto = FileImagenDto.builder()
                 .fileName(fileImagenmap.get("fileName").toString())
                 .base64(fileImagenmap.get("base64").toString())
                 .fileType(fileImagenmap.get("fileType").toString())
                 .identificacion(Integer.parseInt(fileImagenmap.get("identificacion").toString()))
                 .build();
-        return fileImagen;
+        return fileImagenDto;
     }
 }

@@ -12,7 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ClienteFile {
+public class ClienteDto {
 
     @ApiModelProperty(notes = "id autoincremental", position = 1)
     private Integer id;
@@ -37,7 +37,4 @@ public class ClienteFile {
 
     @ApiModelProperty(notes = "Fecha de nacimiento del cliente", required = true, position = 8)
     private Date fechaNacimiento;
-
-    @ApiModelProperty(position = 9)
-    private FileImagen fileImagen;
 }
