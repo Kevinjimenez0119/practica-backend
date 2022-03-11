@@ -4,6 +4,7 @@ import com.pragma.customer.aplicacion.manjeador.ManejadorTipoDocumento;
 import com.pragma.customer.aplicacion.utils.ErrorsUtils;
 import com.pragma.customer.dominio.modelo.Mensaje;
 import com.pragma.customer.dominio.modelo.TipoDocumentoDto;
+import com.pragma.customer.infraestructura.exceptions.RequestException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -41,7 +42,7 @@ public class EndpointActualizarTipoDocumento {
             return new ResponseEntity<>(new Mensaje("tipo de documento " + tipoDocumentoDto.getTipoDocumento() + " actualizado"), HttpStatus.OK);
 
         }else {
-            return new ResponseEntity<>(ErrorsUtils.tipoIdentificacionNoRegistrada(tipoDocumentoDto.getTipoDocumento()), HttpStatus.NOT_FOUND);
+            throw new RequestException("code", HttpStatus.NOT_FOUND, ErrorsUtils.tipoIdentificacionNoRegistrada(tipoDocumentoDto.getTipoDocumento()));
         }
     }
 }

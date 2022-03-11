@@ -3,6 +3,7 @@ package com.pragma.customer.infraestructura.endpoint.clientes;
 import com.pragma.customer.aplicacion.manjeador.ManejadorCliente;
 import com.pragma.customer.aplicacion.utils.ErrorsUtils;
 import com.pragma.customer.dominio.modelo.Mensaje;
+import com.pragma.customer.infraestructura.exceptions.RequestException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -40,7 +41,7 @@ public class EndpointEliminarCliente {
             return new ResponseEntity<>(new Mensaje("usuario con identificacion " + numero + " eliminado"), HttpStatus.OK);
 
         } else {
-            return new ResponseEntity<>(ErrorsUtils.identificacionNoRegistrada(numero.toString()), HttpStatus.NOT_FOUND);
+            throw new RequestException("code", HttpStatus.NOT_FOUND, ErrorsUtils.identificacionNoRegistrada(numero.toString()));
         }
     }
 }

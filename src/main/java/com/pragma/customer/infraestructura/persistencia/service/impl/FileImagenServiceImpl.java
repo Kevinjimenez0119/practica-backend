@@ -19,7 +19,7 @@ public class FileImagenServiceImpl implements FileImagenServiceClient {
 
     @Override
     public boolean delete(Integer identificacion) {
-        ResponseEntity<Map<String, Object>> clienteResponseEntity = fileImagenInterfaceClient.findByNumeroIdentificacion(identificacion);
+        ResponseEntity<Map<String, Object>> clienteResponseEntity = fileImagenInterfaceClient.delete(identificacion);
         if (clienteResponseEntity.getStatusCodeValue() != 200) {
             return false;
         }

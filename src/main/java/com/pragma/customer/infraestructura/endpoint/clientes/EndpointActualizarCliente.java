@@ -5,6 +5,7 @@ import com.pragma.customer.aplicacion.manjeador.ManejadorTipoDocumento;
 import com.pragma.customer.aplicacion.utils.ErrorsUtils;
 import com.pragma.customer.dominio.modelo.ClienteDto;
 import com.pragma.customer.dominio.modelo.Mensaje;
+import com.pragma.customer.infraestructura.exceptions.RequestException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -46,10 +47,10 @@ public class EndpointActualizarCliente {
                 manejadorCliente.actualizar(cliente);
                 return new ResponseEntity<>(new Mensaje("usuario " + cliente.getNombres() + " actualizado"), HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(ErrorsUtils.tipoIdentificacionNoRegistrada(cliente.getIdentificacion().toString()), HttpStatus.BAD_REQUEST);
+                throw new RequestException("code", HttpStatus.BAD_REQUEST, ErrorsUtils.tipoIdentificacionNoRegistrada(cliente.getIdentificacion().toString()));
             }
         }else {
-            return new ResponseEntity<>(ErrorsUtils.identificacionNoRegistrada(cliente.getIdentificacion().toString()), HttpStatus.NOT_FOUND);
+            throw new RequestException("code", HttpStatus.NOT_FOUND, ErrorsUtils.identificacionNoRegistrada(cliente.getIdentificacion().toString()));
         }
     }
 }

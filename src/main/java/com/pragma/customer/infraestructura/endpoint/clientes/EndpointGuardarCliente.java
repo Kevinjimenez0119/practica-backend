@@ -5,6 +5,8 @@ import com.pragma.customer.aplicacion.manjeador.ManejadorTipoDocumento;
 import com.pragma.customer.aplicacion.utils.ErrorsUtils;
 import com.pragma.customer.dominio.modelo.ClienteDto;
 import com.pragma.customer.dominio.modelo.Mensaje;
+import com.pragma.customer.infraestructura.exceptions.LogicException;
+import com.pragma.customer.infraestructura.exceptions.RequestException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -33,7 +35,8 @@ public class EndpointGuardarCliente {
     @ApiOperation("guarda un cliente")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "usuario ya registrado o identificacion no valida")
+            @ApiResponse(code = 409, message = "usuario ya registrado"),
+            @ApiResponse(code = 400, message = "identificacion no valida")
     })
     public ResponseEntity<?> guardarCliente(
             @RequestBody
@@ -44,10 +47,10 @@ public class EndpointGuardarCliente {
                 manejadorCliente.guardar(cliente);
                 return new ResponseEntity<>(new Mensaje("usuario " + cliente.getNombres() + " guardado"), HttpStatus.CREATED);
             } else {
-                return new ResponseEntity<>(ErrorsUtils.tipoIdentificacionNoRegistrada(cliente.getIdentificacion().toString()), HttpStatus.BAD_REQUEST);
+                throw new RequestException("code", HttpStatus.BAD_REQUEST, ErrorsUtils.tipoIdentificacionNoRegistrada(cliente.getIdentificacion().toString()));
             }
         } else {
-            return new ResponseEntity<>(ErrorsUtils.identificacionYaRegistrada(cliente.getIdentificacion().toString()), HttpStatus.BAD_REQUEST);
+            throw new LogicException("code", HttpStatus.CONFLICT, ErrorsUtils.identificacionYaRegistrada(cliente.getIdentificacion().toString()));
         }
     }
 }

@@ -2,11 +2,20 @@ package com.pragma.customer.aplicacion.utils;
 
 public class ErrorsUtils {
 
+    //General
+    private static final  String SIN_REGISTROS = "No hay registros";
+    //Tipo identificacion
     private static final String TIPO_IDENTIFICACION_NO_REGISTRADA = "el tipo de documento %s no esta registrada";
     private static final String TIPO_IDENTIFICACION_REGISTRADA = "el tipo de documento %s ya esta registrada";
+
+    //Cliente
     private static final String IDENTIFICACION_NO_REGISTRADA = "la identificacion %s no esta registrada";
     private static final String IDENTIFICACION_YA_REGISTRADA = "la identificacion %s ya esta registrada";
     private static final String SIN_CLIENTES_POR_EDAD = "no existen clientes con edad mayor o igual a %d";
+
+    public static String sinRegistros() {
+        return SIN_REGISTROS;
+    }
 
     public static String tipoIdentificacionNoRegistrada(String tipo) {
         return String.format(TIPO_IDENTIFICACION_NO_REGISTRADA, tipo);

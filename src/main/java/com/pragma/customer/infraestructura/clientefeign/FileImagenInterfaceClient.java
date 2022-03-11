@@ -16,6 +16,5 @@ public interface FileImagenInterfaceClient {
     ResponseEntity<Map<String, Object>> findByNumeroIdentificacion(@PathVariable Integer numero);
 
     @DeleteMapping(value = "/identificacion/{numero}")
-    @Headers("Content-Type: application/json")
     ResponseEntity<Map<String, Object>> delete(@PathVariable Integer numero);
 }

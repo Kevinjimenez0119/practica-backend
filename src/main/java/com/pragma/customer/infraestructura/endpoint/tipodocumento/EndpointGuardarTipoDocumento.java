@@ -4,6 +4,7 @@ import com.pragma.customer.aplicacion.manjeador.ManejadorTipoDocumento;
 import com.pragma.customer.aplicacion.utils.ErrorsUtils;
 import com.pragma.customer.dominio.modelo.Mensaje;
 import com.pragma.customer.dominio.modelo.TipoDocumentoDto;
+import com.pragma.customer.infraestructura.exceptions.RequestException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -29,6 +30,7 @@ public class EndpointGuardarTipoDocumento {
     @ApiOperation("guarda un tipo de identificacion")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 409, message = "usuario ya registrado"),
             @ApiResponse(code = 400, message = "tipo de documento ya registrada")
     })
     public ResponseEntity<?> guardarTipoDocumento(
@@ -40,7 +42,7 @@ public class EndpointGuardarTipoDocumento {
                 return new ResponseEntity<>(new Mensaje("tipo de documento " + tipoDocumentoDto.getTipoDocumento() + " guardado"), HttpStatus.CREATED);
 
         } else {
-            return new ResponseEntity<>(ErrorsUtils.tipoIdentificacionRegistrada(tipoDocumentoDto.getTipoDocumento()), HttpStatus.BAD_REQUEST);
+            throw new RequestException("code", HttpStatus.CONFLICT, ErrorsUtils.tipoIdentificacionRegistrada(tipoDocumentoDto.getTipoDocumento()));
         }
     }
 }

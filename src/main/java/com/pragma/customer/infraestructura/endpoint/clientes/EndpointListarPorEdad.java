@@ -3,6 +3,7 @@ package com.pragma.customer.infraestructura.endpoint.clientes;
 import com.pragma.customer.aplicacion.manjeador.ManejadorCliente;
 import com.pragma.customer.aplicacion.utils.ErrorsUtils;
 import com.pragma.customer.dominio.modelo.ClienteDto;
+import com.pragma.customer.infraestructura.exceptions.LogicException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -21,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 @CrossOrigin(origins = "*")
-public class EndPointListarPorEdad {
+public class EndpointListarPorEdad {
 
     @Autowired
     private ManejadorCliente manejadorCliente;
@@ -40,7 +41,7 @@ public class EndPointListarPorEdad {
         List<ClienteDto> clienteList = manejadorCliente.listarPorEdadMayor(edad);
         if(clienteList.isEmpty())
         {
-            return new ResponseEntity<>(ErrorsUtils.sinClientesPorEdad(edad), HttpStatus.NO_CONTENT);
+            throw new LogicException("code", HttpStatus.CONFLICT, ErrorsUtils.sinRegistros());
         }
         return new ResponseEntity(clienteList, HttpStatus.OK);
     }

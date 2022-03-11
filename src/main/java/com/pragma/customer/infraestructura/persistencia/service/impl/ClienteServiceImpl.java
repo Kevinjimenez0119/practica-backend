@@ -81,9 +81,17 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     @Override
     public void delete(Integer identificacion) {
         try {
-            Optional<ClienteEntidad> clienteEntidad = clienteInterfaceRepository.findById(identificacion);
-            fileImagenService.delete(identificacion);
-            clienteInterfaceRepository.delete(clienteEntidad.get());
+            FileImagenDto fileImagenDto = fileImagenService.findByNumeroIdentificacion(identificacion);
+            if(fileImagenDto == null) {
+                Optional<ClienteEntidad> clienteEntidad = clienteInterfaceRepository.findById(identificacion);
+                clienteInterfaceRepository.delete(clienteEntidad.get());
+            } else {
+                if(fileImagenService.delete(identificacion)==true) {
+                    Optional<ClienteEntidad> clienteEntidad = clienteInterfaceRepository.findByIdentificacion(identificacion);
+                    clienteInterfaceRepository.delete(clienteEntidad.get());
+                }
+            }
+
         } catch (Exception e) {
             logger.error("Error al eliminar el cliente", e);
         }

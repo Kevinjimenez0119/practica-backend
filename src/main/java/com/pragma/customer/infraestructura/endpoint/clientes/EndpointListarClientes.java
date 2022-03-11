@@ -1,8 +1,10 @@
 package com.pragma.customer.infraestructura.endpoint.clientes;
 
 import com.pragma.customer.aplicacion.manjeador.ManejadorCliente;
+import com.pragma.customer.aplicacion.utils.ErrorsUtils;
 import com.pragma.customer.dominio.modelo.ClienteDto;
 import com.pragma.customer.dominio.modelo.Mensaje;
+import com.pragma.customer.infraestructura.exceptions.LogicException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -37,7 +39,7 @@ public class EndpointListarClientes {
         List<ClienteDto> clienteList = manejadorCliente.listar();
         if(clienteList.isEmpty())
         {
-            return new ResponseEntity<>(new Mensaje("No hay registros"), HttpStatus.NO_CONTENT);
+            throw new LogicException("code", HttpStatus.CONFLICT, ErrorsUtils.sinRegistros());
         }
         return new ResponseEntity<>(clienteList, HttpStatus.OK);
     }
