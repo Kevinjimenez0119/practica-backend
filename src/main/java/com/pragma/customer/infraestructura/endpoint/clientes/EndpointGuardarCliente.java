@@ -1,12 +1,8 @@
 package com.pragma.customer.infraestructura.endpoint.clientes;
 
 import com.pragma.customer.aplicacion.manjeador.ManejadorCliente;
-import com.pragma.customer.aplicacion.manjeador.ManejadorTipoDocumento;
-import com.pragma.customer.aplicacion.utils.ErrorsUtils;
 import com.pragma.customer.dominio.modelo.ClienteDto;
 import com.pragma.customer.dominio.modelo.Mensaje;
-import com.pragma.customer.infraestructura.exceptions.LogicException;
-import com.pragma.customer.infraestructura.exceptions.RequestException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -28,9 +24,6 @@ public class EndpointGuardarCliente {
     @Autowired
     private ManejadorCliente manejadorCliente;
 
-    @Autowired
-    private ManejadorTipoDocumento manejadorTipoDocumento;
-
     @PostMapping()
     @ApiOperation("guarda un cliente")
     @ApiResponses({
@@ -41,16 +34,8 @@ public class EndpointGuardarCliente {
     public ResponseEntity<?> guardarCliente(
             @RequestBody
             @ApiParam(value = "cliente", required = true) ClienteDto cliente
-    ) {
-        if(manejadorCliente.existeCliente(cliente.getIdentificacion()) == false) {
-            if(manejadorTipoDocumento.existeTipo(cliente.getTipoDocumento())) {
-                manejadorCliente.guardar(cliente);
-                return new ResponseEntity<>(new Mensaje("usuario " + cliente.getNombres() + " guardado"), HttpStatus.CREATED);
-            } else {
-                throw new RequestException("code", HttpStatus.BAD_REQUEST, ErrorsUtils.tipoIdentificacionNoRegistrada(cliente.getIdentificacion().toString()));
-            }
-        } else {
-            throw new LogicException("code", HttpStatus.CONFLICT, ErrorsUtils.identificacionYaRegistrada(cliente.getIdentificacion().toString()));
-        }
+    ) throws Exception {
+        manejadorCliente.guardar(cliente);
+        return new ResponseEntity<>(new Mensaje("usuario " + cliente.getNombres() + " guardado"), HttpStatus.CREATED);
     }
 }

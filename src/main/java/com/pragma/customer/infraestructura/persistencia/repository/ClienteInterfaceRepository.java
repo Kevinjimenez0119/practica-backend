@@ -18,4 +18,6 @@ public interface ClienteInterfaceRepository extends JpaRepository<ClienteEntidad
     @Query(value = "Select c.* from cliente c where c.edad >?1", nativeQuery = true )
     List<ClienteEntidad> findByAge(Integer edad);
 
+    @Query(value = "SELECT CASE WHEN COUNT(id) > 0 THEN true ELSE false END FROM cliente c WHERE c.tipo_documento =?1", nativeQuery = true )
+    Integer existsByTipoDocumento(Integer id);
 }

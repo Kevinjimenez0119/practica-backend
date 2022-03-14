@@ -35,13 +35,8 @@ public class EndpointEliminarCliente {
             @PathVariable
             @ApiParam(value = "numero de identificacion", required = true, example = "1")
                     Integer numero
-    ) {
-        if(manejadorCliente.existeCliente(numero) == true) {
-            manejadorCliente.eliminar(numero);
-            return new ResponseEntity<>(new Mensaje("usuario con identificacion " + numero + " eliminado"), HttpStatus.OK);
-
-        } else {
-            throw new RequestException("code", HttpStatus.NOT_FOUND, ErrorsUtils.identificacionNoRegistrada(numero.toString()));
-        }
+    ) throws Exception {
+        manejadorCliente.eliminar(numero);
+        return new ResponseEntity<>(new Mensaje("usuario con identificacion " + numero + " eliminado"), HttpStatus.OK);
     }
 }

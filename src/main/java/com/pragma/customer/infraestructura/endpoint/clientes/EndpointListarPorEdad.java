@@ -1,9 +1,7 @@
 package com.pragma.customer.infraestructura.endpoint.clientes;
 
 import com.pragma.customer.aplicacion.manjeador.ManejadorCliente;
-import com.pragma.customer.aplicacion.utils.ErrorsUtils;
 import com.pragma.customer.dominio.modelo.ClienteDto;
-import com.pragma.customer.infraestructura.exceptions.LogicException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -37,12 +35,8 @@ public class EndpointListarPorEdad {
             @PathVariable
             @ApiParam(value = "edad", required = true, example = "20")
                     Integer edad
-    ) {
+    ) throws Exception {
         List<ClienteDto> clienteList = manejadorCliente.listarPorEdadMayor(edad);
-        if(clienteList.isEmpty())
-        {
-            throw new LogicException("code", HttpStatus.CONFLICT, ErrorsUtils.sinRegistros());
-        }
         return new ResponseEntity(clienteList, HttpStatus.OK);
     }
 }

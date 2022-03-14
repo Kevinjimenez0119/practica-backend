@@ -16,18 +16,19 @@ public class ClienteUseCase {
 
     private final ClienteInterfaceService clienteInterfaceService;
 
-    public void guardar(ClienteDto cliente) {
+    public void guardar(ClienteDto cliente) throws Exception {
         clienteInterfaceService.save(cliente);
     }
-    public void actualizar(ClienteDto cliente) {
+
+    public void actualizar(ClienteDto cliente) throws Exception {
         clienteInterfaceService.update(cliente);
     }
 
-    public void eliminar(Integer id) {
+    public void eliminar(Integer id) throws Exception {
         clienteInterfaceService.delete(id);
     }
 
-    public List<ClienteDto> listar() {
+    public List<ClienteDto> listar() throws Exception {
         return clienteInterfaceService.findAll();
     }
 
@@ -35,23 +36,23 @@ public class ClienteUseCase {
         return clienteInterfaceService.findById(id);
     }
 
-    public ClienteDto buscarPorIdentificacion(Integer identificacion) {
+    public ClienteDto buscarPorIdentificacion(Integer identificacion) throws Exception {
         return clienteInterfaceService.findByIdentificacion(identificacion);
     }
 
-    public ClienteFileDto buscarPorIdentificacionFile(Integer identificacion) {
+    public ClienteFileDto buscarPorIdentificacionFile(Integer identificacion) throws Exception {
         return clienteInterfaceService.findByIdentificacionFile(identificacion);
     }
 
-    public List<ClienteDto> listarPorEdadMayor(Integer edad) {
+    public List<ClienteDto> listarPorEdadMayor(Integer edad) throws Exception {
         return clienteInterfaceService.findByAge(edad);
     }
 
-    public boolean existeCliente(Integer identificacion) {
+    public boolean existeCliente(Integer identificacion) throws Exception {
         return clienteInterfaceService.existsByIdentificacion(identificacion);
     }
 
-    public Page<ClienteDto> listarPag(Pageable pageable) {
+    public Page<ClienteDto> listarPag(Pageable pageable) throws Exception {
         return clienteInterfaceService.findAllPag(pageable);
     }
 
@@ -61,5 +62,9 @@ public class ClienteUseCase {
 
     public  Integer edadPorFecha(Date fechaNac) {
         return clienteInterfaceService.getAgeByDate(fechaNac);
+    }
+
+    public boolean buscarPorTipoDeDocumento(String tipo) throws Exception {
+        return clienteInterfaceService.existsByTipoDocumentoEntidad(tipo);
     }
 }

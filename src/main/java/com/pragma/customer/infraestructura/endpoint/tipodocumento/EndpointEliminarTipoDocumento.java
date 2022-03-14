@@ -1,5 +1,6 @@
 package com.pragma.customer.infraestructura.endpoint.tipodocumento;
 
+import com.pragma.customer.aplicacion.manjeador.ManejadorCliente;
 import com.pragma.customer.aplicacion.manjeador.ManejadorTipoDocumento;
 import com.pragma.customer.aplicacion.utils.ErrorsUtils;
 import com.pragma.customer.dominio.modelo.Mensaje;
@@ -25,23 +26,22 @@ public class EndpointEliminarTipoDocumento {
     @Autowired
     private ManejadorTipoDocumento manejadorTipoDocumento;
 
+    @Autowired
+    private ManejadorCliente manejadorCliente;
+
     @DeleteMapping("/tipo/{tipo}")
     @ApiOperation("elimina un tipo de documento")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "el tipo de documento lo tienen algunos clientes"),
             @ApiResponse(code = 404, message = "no se encontro tipo de documento")
     })
     public ResponseEntity<?> eliminar(
             @PathVariable
             @ApiParam(value = "tipo de documento", required = true, example = "CC")
                     String tipo
-    ) {
-        if(manejadorTipoDocumento.existeTipo(tipo) == true) {
-            manejadorTipoDocumento.eliminar(tipo);
-            return new ResponseEntity<>(new Mensaje("usuario con identificacion " + tipo + " eliminado"), HttpStatus.OK);
-
-        } else {
-            throw new RequestException("code", HttpStatus.NOT_FOUND, ErrorsUtils.tipoIdentificacionNoRegistrada(tipo));
-        }
+    ) throws Exception {
+        manejadorTipoDocumento.eliminar(tipo);
+        return new ResponseEntity<>(new Mensaje("identificacion " + tipo + " eliminado"), HttpStatus.OK);
     }
 }

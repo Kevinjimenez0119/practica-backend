@@ -36,13 +36,8 @@ public class EndpointGuardarTipoDocumento {
     public ResponseEntity<?> guardarTipoDocumento(
             @RequestBody
             @ApiParam(value = "cliente", required = true) TipoDocumentoDto tipoDocumentoDto
-            ) {
-        if(manejadorTipoDocumento.existeTipo(tipoDocumentoDto.getTipoDocumento()) == false) {
+            ) throws Exception {
                 manejadorTipoDocumento.guardar(tipoDocumentoDto);
                 return new ResponseEntity<>(new Mensaje("tipo de documento " + tipoDocumentoDto.getTipoDocumento() + " guardado"), HttpStatus.CREATED);
-
-        } else {
-            throw new RequestException("code", HttpStatus.CONFLICT, ErrorsUtils.tipoIdentificacionRegistrada(tipoDocumentoDto.getTipoDocumento()));
-        }
     }
 }

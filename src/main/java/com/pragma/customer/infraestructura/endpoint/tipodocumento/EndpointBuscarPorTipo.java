@@ -35,14 +35,8 @@ public class EndpointBuscarPorTipo {
             @PathVariable
             @ApiParam(value = "tipo de documento", required = true, example = "CC")
                     String tipo
-    ) {
-
-        if(manejadorTipoDocumento.existeTipo(tipo) == true)
-        {
-            TipoDocumentoDto tipoDocumentoDto = manejadorTipoDocumento.buscarPorTipo(tipo);
-            return new ResponseEntity(tipoDocumentoDto, HttpStatus.OK);
-        } else {
-            throw new RequestException("code", HttpStatus.NOT_FOUND, ErrorsUtils.tipoIdentificacionNoRegistrada(tipo));
-        }
+    ) throws Exception {
+        TipoDocumentoDto tipoDocumentoDto = manejadorTipoDocumento.buscarPorTipo(tipo);
+        return new ResponseEntity(tipoDocumentoDto, HttpStatus.OK);
     }
 }

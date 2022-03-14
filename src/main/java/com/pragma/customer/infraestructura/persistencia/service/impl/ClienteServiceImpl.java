@@ -1,9 +1,13 @@
 package com.pragma.customer.infraestructura.persistencia.service.impl;
 
+import com.pragma.customer.aplicacion.utils.ErrorsUtils;
 import com.pragma.customer.dominio.modelo.ClienteDto;
 import com.pragma.customer.dominio.modelo.ClienteFileDto;
 import com.pragma.customer.dominio.modelo.FileImagenDto;
 import com.pragma.customer.dominio.service.ClienteInterfaceService;
+import com.pragma.customer.dominio.service.TipoDocumentoInterfaceService;
+import com.pragma.customer.infraestructura.exceptions.LogicException;
+import com.pragma.customer.infraestructura.exceptions.RequestException;
 import com.pragma.customer.infraestructura.mappers.ClienteInterfaceMapper;
 import com.pragma.customer.infraestructura.persistencia.entity.ClienteEntidad;
 import com.pragma.customer.infraestructura.persistencia.entity.TipoDocumentoEntidad;
@@ -15,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,53 +42,59 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     private TipoDocumentoInterfaceReporsitory tipoDocumentoInterfaceReporsitory;
 
     @Autowired
+    private TipoDocumentoInterfaceService tipoDocumentoInterfaceService;
+
+    @Autowired
     private ClienteInterfaceMapper clienteInterfaceMapper;
 
     @Autowired
     private FileImagenServiceImpl fileImagenService;
 
     @Override
-    public void save(ClienteDto cliente) {
-        try {
-            Optional<TipoDocumentoEntidad> tipoDocumentoEntidad = tipoDocumentoInterfaceReporsitory.findByTipoDocumento(cliente.getTipoDocumento());
-            ClienteEntidad clienteEntidad = ClienteEntidad.builder()
-                    .nombres(cliente.getNombres())
-                    .apellidos(cliente.getApellidos())
-                    .ciudadNacimiento(cliente.getCiudadNacimiento())
-                    .tipoDocumentoEntidad(tipoDocumentoEntidad.get())
-                    .edad(cliente.getEdad())
-                    .fechaNacimiento(cliente.getFechaNacimiento())
-                    .identificacion(cliente.getIdentificacion())
-                            .build();
-            clienteInterfaceRepository.save(clienteEntidad);
-        } catch (Exception e) {
-            logger.error("Error al registrar el cliente", e);
+    public void save(ClienteDto cliente) throws Exception {
+        if(!clienteInterfaceRepository.existsByIdentificacion(cliente.getIdentificacion())) {
+            if (tipoDocumentoInterfaceService.existsByTipoDocumento(cliente.getTipoDocumento())) {
+                Optional<TipoDocumentoEntidad> tipoDocumentoEntidad = tipoDocumentoInterfaceReporsitory.findByTipoDocumento(cliente.getTipoDocumento());
+                ClienteEntidad clienteEntidad = ClienteEntidad.builder()
+                        .nombres(cliente.getNombres())
+                        .apellidos(cliente.getApellidos())
+                        .ciudadNacimiento(cliente.getCiudadNacimiento())
+                        .tipoDocumentoEntidad(tipoDocumentoEntidad.get())
+                        .edad(cliente.getEdad())
+                        .fechaNacimiento(cliente.getFechaNacimiento())
+                        .identificacion(cliente.getIdentificacion())
+                        .build();
+                clienteInterfaceRepository.save(clienteEntidad);
+            }
+        } else {
+            throw new RequestException("code", HttpStatus.BAD_REQUEST, ErrorsUtils.identificacionYaRegistrada(cliente.getIdentificacion().toString()));
         }
     }
 
     @Override
-    public void update(ClienteDto cliente) {
-        try {
-            ClienteDto clienteUpdate = findByIdentificacion(cliente.getIdentificacion());
-            clienteUpdate.setNombres(cliente.getNombres());
-            clienteUpdate.setApellidos(cliente.getApellidos());
-            clienteUpdate.setCiudadNacimiento(cliente.getCiudadNacimiento());
-            clienteUpdate.setEdad(cliente.getEdad());
-            clienteUpdate.setTipoDocumento(cliente.getTipoDocumento());
-            clienteUpdate.setFechaNacimiento(cliente.getFechaNacimiento());
-            clienteUpdate.setIdentificacion((cliente.getIdentificacion()));
-            save(clienteUpdate);
-        } catch (Exception e) {
-            logger.error("Error al registrar el cliente", e);
+    public void update(ClienteDto cliente) throws Exception{
+        if(existsByIdentificacion(cliente.getIdentificacion())) {
+            if(tipoDocumentoInterfaceService.existsByTipoDocumento(cliente.getTipoDocumento())) {
+                TipoDocumentoEntidad tipoDocumentoEntidad = tipoDocumentoInterfaceReporsitory.findByTipoDocumento(cliente.getTipoDocumento()).get();
+                ClienteEntidad clienteUpdate = clienteInterfaceRepository.findByIdentificacion(cliente.getIdentificacion()).get();
+                clienteUpdate.setNombres(cliente.getNombres());
+                clienteUpdate.setApellidos(cliente.getApellidos());
+                clienteUpdate.setCiudadNacimiento(cliente.getCiudadNacimiento());
+                clienteUpdate.setEdad(cliente.getEdad());
+                clienteUpdate.setTipoDocumentoEntidad(tipoDocumentoEntidad);
+                clienteUpdate.setFechaNacimiento(cliente.getFechaNacimiento());
+                clienteUpdate.setIdentificacion((cliente.getIdentificacion()));
+                clienteInterfaceRepository.save(clienteUpdate);
+            }
         }
     }
 
     @Override
-    public void delete(Integer identificacion) {
-        try {
+    public void delete(Integer identificacion) throws Exception{
+        if(existsByIdentificacion(identificacion)) {
             FileImagenDto fileImagenDto = fileImagenService.findByNumeroIdentificacion(identificacion);
             if(fileImagenDto == null) {
-                Optional<ClienteEntidad> clienteEntidad = clienteInterfaceRepository.findById(identificacion);
+                Optional<ClienteEntidad> clienteEntidad = clienteInterfaceRepository.findByIdentificacion(identificacion);
                 clienteInterfaceRepository.delete(clienteEntidad.get());
             } else {
                 if(fileImagenService.delete(identificacion)==true) {
@@ -91,20 +102,17 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
                     clienteInterfaceRepository.delete(clienteEntidad.get());
                 }
             }
-
-        } catch (Exception e) {
-            logger.error("Error al eliminar el cliente", e);
         }
     }
 
     @Override
-    public List<ClienteDto> findAll() {
-        try {
-            return clienteInterfaceMapper.toClienteListDto(clienteInterfaceRepository.findAll());
-        } catch (Exception e) {
-            logger.error("Error al listar clientes", e);
-        }
-        return new ArrayList<>();
+    public List<ClienteDto> findAll() throws Exception{
+            List<ClienteDto> clienteDtoList = clienteInterfaceMapper.toClienteListDto(clienteInterfaceRepository.findAll());
+            if(clienteDtoList.isEmpty())
+            {
+                throw new LogicException("code", HttpStatus.NO_CONTENT, ErrorsUtils.sinRegistros());
+            }
+            return clienteDtoList;
     }
 
     @Override
@@ -118,22 +126,20 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     }
 
     @Override
-    public ClienteFileDto findByIdentificacionFile(Integer identificacion) {
-        try {
-            ClienteDto clienteDto = clienteInterfaceMapper.toClienteDto(clienteInterfaceRepository.findByIdentificacion(identificacion).get());
-            FileImagenDto fileImagenDto = fileImagenService.findByNumeroIdentificacion(identificacion);
-            if(fileImagenDto == null) {
-                fileImagenDto = FileImagenDto.builder()
-                        .fileName("")
-                        .fileType("")
-                        .base64("")
-                        .identificacion(clienteDto.getIdentificacion()).build();
+    public ClienteFileDto findByIdentificacionFile(Integer identificacion) throws Exception {
+            if(existsByIdentificacion(identificacion)) {
+                ClienteDto clienteDto = findByIdentificacion(identificacion);
+                FileImagenDto fileImagenDto = fileImagenService.findByNumeroIdentificacion(identificacion);
+                if(fileImagenDto == null) {
+                    fileImagenDto = FileImagenDto.builder()
+                            .fileName("")
+                            .fileType("")
+                            .base64("")
+                            .identificacion(clienteDto.getIdentificacion()).build();
+                    return maptoFotocliente(clienteDto, fileImagenDto);
+                }
                 return maptoFotocliente(clienteDto, fileImagenDto);
             }
-            return maptoFotocliente(clienteDto, fileImagenDto);
-        } catch (Exception e) {
-            logger.error("Error al buscar cliente por id con imagen", e);
-        }
         return null;
     }
 
@@ -153,46 +159,50 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     }
 
     @Override
-    public ClienteDto findByIdentificacion(Integer identificacion) {
-        try {
-            return clienteInterfaceMapper.toClienteDto(clienteInterfaceRepository.findByIdentificacion(identificacion).get());
-        } catch (Exception e) {
-            logger.error("Error al buscar cliente por identificacion", e);
-        }
-        return null;
+    public ClienteDto findByIdentificacion(Integer identificacion) throws Exception {
+        existsByIdentificacion(identificacion);
+        return clienteInterfaceMapper.toClienteDto(clienteInterfaceRepository.findByIdentificacion(identificacion).get());
     }
 
     @Override
-    public boolean existsByIdentificacion(Integer identificacion) {
-        try {
-            return clienteInterfaceRepository.existsByIdentificacion(identificacion);
-        } catch (Exception e) {
-            logger.error("Error al buscar cliente exist", e);
+    public boolean existsByIdentificacion(Integer identificacion) throws Exception{
+        if(clienteInterfaceRepository.existsByIdentificacion(identificacion)) {
+            return true;
+        } else {
+            throw new RequestException("code", HttpStatus.NOT_FOUND, ErrorsUtils.identificacionNoRegistrada(identificacion.toString()));
         }
-        return false;
     }
 
     @Override
-    public List<ClienteDto> findByAge(Integer edad) {
-        try {
-            return clienteInterfaceMapper.toClienteListDto(clienteInterfaceRepository.findByAge(edad));
-        } catch (Exception e) {
-            logger.error("Error al listar cliente por edad", e);
+    public List<ClienteDto> findByAge(Integer edad) throws Exception{
+        List<ClienteDto> clienteDtoList = clienteInterfaceMapper.toClienteListDto(clienteInterfaceRepository.findByAge(edad));
+        if(clienteDtoList.isEmpty())
+        {
+            throw new LogicException("code", HttpStatus.NO_CONTENT, ErrorsUtils.sinRegistros());
         }
-        return new ArrayList<>();
+        return clienteDtoList;
     }
 
     @Override
-    public Page<ClienteDto> findAllPag(Pageable pageable) {
-        try {
-            Page<ClienteEntidad> clienteEntidadList = clienteInterfaceRepository.findAll(pageable);
-            List<ClienteDto> clienteDtoList = clienteInterfaceMapper.toClienteListDto(clienteEntidadList.toList());
-            Page<ClienteDto> clienteDtoPageList = new PageImpl<>(clienteDtoList);
-            return clienteDtoPageList;
-        } catch (Exception e) {
-            logger.error("Error al listar cliente por edad", e);
+    public boolean existsByTipoDocumentoEntidad(String tipo) throws Exception{
+        Optional<TipoDocumentoEntidad> tipoDocumentoEntidad = tipoDocumentoInterfaceReporsitory.findByTipoDocumento(tipo);
+        if(clienteInterfaceRepository.existsByTipoDocumento(tipoDocumentoEntidad.get().getId()) == 1) {
+            return true;
+        } else {
+            return false;
         }
-        return null;
+    }
+
+    @Override
+    public Page<ClienteDto> findAllPag(Pageable pageable) throws Exception{
+        Page<ClienteEntidad> clienteEntidadList = clienteInterfaceRepository.findAll(pageable);
+        List<ClienteDto> clienteDtoList = clienteInterfaceMapper.toClienteListDto(clienteEntidadList.toList());
+        if(clienteDtoList.isEmpty())
+        {
+            throw new LogicException("code", HttpStatus.CONFLICT, ErrorsUtils.sinRegistros());
+        }
+        Page<ClienteDto> clienteDtoPageList = new PageImpl<>(clienteDtoList);
+        return clienteDtoPageList;
     }
 
     @Override

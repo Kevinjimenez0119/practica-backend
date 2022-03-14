@@ -36,15 +36,10 @@ public class EndpointObtenerEdadPorFechaNacimiento {
             @PathVariable
             @ApiParam(value = "numero de identificacion", required = true, example = "1")
                     Integer numero
-    ) {
-        if(manejadorCliente.existeCliente(numero) == true )
-        {
-            ClienteDto cliente = manejadorCliente.buscarPorIdentificacion(numero);
-            Integer edad = manejadorCliente.edadPorFecha(cliente.getFechaNacimiento());
-            return new ResponseEntity<>(edad, HttpStatus.OK);
-        }else{
-            throw new RequestException("code", HttpStatus.NOT_FOUND, ErrorsUtils.identificacionNoRegistrada(numero.toString()));
+    ) throws Exception {
+        ClienteDto cliente = manejadorCliente.buscarPorIdentificacion(numero);
+        Integer edad = manejadorCliente.edadPorFecha(cliente.getFechaNacimiento());
+        return new ResponseEntity<>(edad, HttpStatus.OK);
 
-        }
     }
 }

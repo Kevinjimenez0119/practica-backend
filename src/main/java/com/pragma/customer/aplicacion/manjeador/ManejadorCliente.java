@@ -16,19 +16,19 @@ public class ManejadorCliente {
 
     private final ClienteUseCase clienteUseCase;
 
-    public void guardar(ClienteDto cliente) {
+    public void guardar(ClienteDto cliente) throws Exception {
         clienteUseCase.guardar(cliente);
     }
 
-    public void actualizar(ClienteDto cliente) {
+    public void actualizar(ClienteDto cliente) throws Exception {
         clienteUseCase.actualizar(cliente);
     }
 
-    public void eliminar(Integer id) {
+    public void eliminar(Integer id) throws Exception {
         clienteUseCase.eliminar(id);
     }
 
-    public List<ClienteDto> listar() {
+    public List<ClienteDto> listar() throws Exception {
         return clienteUseCase.listar();
     }
 
@@ -36,23 +36,27 @@ public class ManejadorCliente {
         return clienteUseCase.buscarPorId(id);
     }
 
-    public ClienteDto buscarPorIdentificacion(Integer identificacion) {
+    public ClienteDto buscarPorIdentificacion(Integer identificacion) throws Exception {
         return clienteUseCase.buscarPorIdentificacion(identificacion);
     }
 
-    public ClienteFileDto buscarPorIdentificacionFile(Integer identificacion) {
+    public ClienteFileDto buscarPorIdentificacionFile(Integer identificacion) throws Exception {
         return clienteUseCase.buscarPorIdentificacionFile(identificacion);
     }
 
-    public List<ClienteDto> listarPorEdadMayor(Integer edad) {
+    public boolean buscarPorTipoDeDocumento(String tipo) throws Exception {
+        return clienteUseCase.buscarPorTipoDeDocumento(tipo);
+    }
+
+    public List<ClienteDto> listarPorEdadMayor(Integer edad) throws Exception {
         return clienteUseCase.listarPorEdadMayor(edad);
     }
 
-    public boolean existeCliente(Integer identificacion) {
+    public boolean existeCliente(Integer identificacion) throws Exception {
         return clienteUseCase.existeCliente(identificacion);
     }
 
-    public Page<ClienteDto> listarPag(Pageable pageable) {
+    public Page<ClienteDto> listarPag(Pageable pageable) throws Exception {
         return clienteUseCase.listarPag(pageable);
     }
 

@@ -12,27 +12,29 @@ import java.util.List;
 public interface ClienteInterfaceService {
 
     //CRUD
-    void save(ClienteDto cliente);
+    void save(ClienteDto cliente) throws Exception;
 
-    void update(ClienteDto cliente);
+    void update(ClienteDto cliente) throws Exception;
 
-    void delete(Integer id);
+    void delete(Integer id) throws Exception;
 
-    List<ClienteDto> findAll();
+    List<ClienteDto> findAll() throws Exception;
 
     //FIND
     ClienteDto findById(Integer id);
 
-    ClienteDto findByIdentificacion(Integer identificacion);
+    ClienteDto findByIdentificacion(Integer identificacion) throws Exception;
 
-    ClienteFileDto findByIdentificacionFile(Integer identificacion);
+    ClienteFileDto findByIdentificacionFile(Integer identificacion) throws Exception;
 
-    boolean existsByIdentificacion(Integer id);
+    boolean existsByIdentificacion(Integer id) throws Exception;
 
-    List<ClienteDto> findByAge(Integer edad);
+    List<ClienteDto> findByAge(Integer edad) throws Exception;
+
+    boolean existsByTipoDocumentoEntidad(String tipo) throws Exception;
 
     //SORTING
-    Page<ClienteDto> findAllPag(Pageable pageable);
+    Page<ClienteDto> findAllPag(Pageable pageable) throws Exception;
 
     //LOGIC
     boolean validateClient(ClienteDto cliente);

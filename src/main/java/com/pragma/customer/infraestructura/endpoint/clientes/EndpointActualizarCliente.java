@@ -41,16 +41,8 @@ public class EndpointActualizarCliente {
             @RequestBody
             @ApiParam(value = "cliente", required = true)
                     ClienteDto cliente
-    ) {
-        if(manejadorCliente.existeCliente(cliente.getIdentificacion()) == true) {
-            if(manejadorTipoDocumento.existeTipo(cliente.getTipoDocumento()) == true) {
-                manejadorCliente.actualizar(cliente);
-                return new ResponseEntity<>(new Mensaje("usuario " + cliente.getNombres() + " actualizado"), HttpStatus.OK);
-            } else {
-                throw new RequestException("code", HttpStatus.BAD_REQUEST, ErrorsUtils.tipoIdentificacionNoRegistrada(cliente.getIdentificacion().toString()));
-            }
-        }else {
-            throw new RequestException("code", HttpStatus.NOT_FOUND, ErrorsUtils.identificacionNoRegistrada(cliente.getIdentificacion().toString()));
-        }
+    ) throws Exception {
+        manejadorCliente.actualizar(cliente);
+        return new ResponseEntity<>(new Mensaje("usuario " + cliente.getNombres() + " actualizado"), HttpStatus.OK);
     }
 }

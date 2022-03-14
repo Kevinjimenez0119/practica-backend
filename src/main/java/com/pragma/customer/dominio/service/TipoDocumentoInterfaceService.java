@@ -7,19 +7,19 @@ import java.util.List;
 public interface TipoDocumentoInterfaceService {
 
     //CRUD
-    void save(TipoDocumentoDto tipoDocumentoDto);
+    void save(TipoDocumentoDto tipoDocumentoDto) throws Exception;
 
-    void delete(String tipo);
+    void delete(String tipo) throws Exception;
 
-    void update(TipoDocumentoDto tipoDocumentoDto);
+    void update(TipoDocumentoDto tipoDocumentoDto) throws Exception;
 
-    List<TipoDocumentoDto> findAll();
+    List<TipoDocumentoDto> findAll() throws Exception;
 
     //FIND
     TipoDocumentoDto findById(Integer id);
 
-    TipoDocumentoDto findByTipoDocumento(String tipo);
+    TipoDocumentoDto findByTipoDocumento(String tipo) throws Exception;
 
-    boolean existsByTipoDocumento(String tipo);
+    boolean existsByTipoDocumento(String tipo) throws Exception;
 
 }

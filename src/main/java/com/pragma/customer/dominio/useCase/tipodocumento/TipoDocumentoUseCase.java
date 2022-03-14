@@ -11,19 +11,19 @@ public class TipoDocumentoUseCase {
 
     private final TipoDocumentoInterfaceService tipoDocumentoInterfaceService;
 
-    public void guardar(TipoDocumentoDto tipoDocumentoDto){
+    public void guardar(TipoDocumentoDto tipoDocumentoDto) throws Exception {
         tipoDocumentoInterfaceService.save(tipoDocumentoDto);
     }
 
-    public void actualizar(TipoDocumentoDto tipoDocumentoDto){
+    public void actualizar(TipoDocumentoDto tipoDocumentoDto) throws Exception {
         tipoDocumentoInterfaceService.update(tipoDocumentoDto);
     }
 
-    public void eliminar(String tipo) {
+    public void eliminar(String tipo) throws Exception {
         tipoDocumentoInterfaceService.delete(tipo);
     }
 
-    public List<TipoDocumentoDto> listar() {
+    public List<TipoDocumentoDto> listar() throws Exception {
         return tipoDocumentoInterfaceService.findAll();
     }
 
@@ -35,11 +35,11 @@ public class TipoDocumentoUseCase {
         return tipoDocumentoInterfaceService.findById(identificacion);
     }
 
-    public boolean existeTipo(String tipo) {
+    public boolean existeTipo(String tipo) throws Exception {
         return tipoDocumentoInterfaceService.existsByTipoDocumento(tipo);
     }
 
-    public TipoDocumentoDto buscarPorTipo(String tipo) {
+    public TipoDocumentoDto buscarPorTipo(String tipo) throws Exception {
         return tipoDocumentoInterfaceService.findByTipoDocumento(tipo);
     }
 }

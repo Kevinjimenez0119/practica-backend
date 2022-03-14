@@ -36,13 +36,8 @@ public class EndpointActualizarTipoDocumento {
             @RequestBody
             @ApiParam(value = "cliente", required = true)
                     TipoDocumentoDto tipoDocumentoDto
-    ) {
-        if(manejadorTipoDocumento.existeTipo(tipoDocumentoDto.getTipoDocumento()) == true) {
-            manejadorTipoDocumento.actualizar(tipoDocumentoDto);
-            return new ResponseEntity<>(new Mensaje("tipo de documento " + tipoDocumentoDto.getTipoDocumento() + " actualizado"), HttpStatus.OK);
-
-        }else {
-            throw new RequestException("code", HttpStatus.NOT_FOUND, ErrorsUtils.tipoIdentificacionNoRegistrada(tipoDocumentoDto.getTipoDocumento()));
-        }
+    ) throws Exception {
+        manejadorTipoDocumento.actualizar(tipoDocumentoDto);
+        return new ResponseEntity<>(new Mensaje("tipo de documento " + tipoDocumentoDto.getTipoDocumento() + " actualizado"), HttpStatus.OK);
     }
 }

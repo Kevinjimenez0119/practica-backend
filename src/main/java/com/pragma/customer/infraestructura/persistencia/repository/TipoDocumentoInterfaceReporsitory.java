@@ -14,4 +14,6 @@ public interface TipoDocumentoInterfaceReporsitory extends JpaRepository<TipoDoc
     boolean existsById(Integer id);
 
     boolean existsByTipoDocumento(String tipo);
+
+
 }

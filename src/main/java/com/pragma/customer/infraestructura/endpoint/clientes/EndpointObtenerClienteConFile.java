@@ -1,11 +1,9 @@
 package com.pragma.customer.infraestructura.endpoint.clientes;
 
 import com.pragma.customer.aplicacion.manjeador.ManejadorCliente;
-import com.pragma.customer.aplicacion.manjeador.ManejadorTipoDocumento;
 import com.pragma.customer.aplicacion.utils.ErrorsUtils;
 import com.pragma.customer.dominio.modelo.ClienteDto;
 import com.pragma.customer.dominio.modelo.ClienteFileDto;
-import com.pragma.customer.dominio.modelo.Mensaje;
 import com.pragma.customer.infraestructura.exceptions.RequestException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -28,9 +26,6 @@ public class EndpointObtenerClienteConFile {
     @Autowired
     private ManejadorCliente manejadorCliente;
 
-    @Autowired
-    private ManejadorTipoDocumento manejadorTipoDocumento;
-
     @GetMapping("/identificacionfile/{tipo}/{numero}")
     @ApiOperation("obtiene un cliente dado su tipo y numero de identificacion")
     @ApiResponses({
@@ -44,16 +39,11 @@ public class EndpointObtenerClienteConFile {
             @PathVariable
             @ApiParam(value = "numero de identificacion", required = true, example = "1")
                     Integer numero
-    ) {
-        if(manejadorCliente.existeCliente(numero) == true && manejadorTipoDocumento.existeTipo(tipo) == true)
-        {
-            ClienteFileDto clienteFile = manejadorCliente.buscarPorIdentificacionFile(numero);
-            if (clienteFile.getTipoDocumento().equals(tipo)) {
-                return new ResponseEntity(clienteFile, HttpStatus.OK);
-            }
-            throw new RequestException("code", HttpStatus.NOT_FOUND, ErrorsUtils.identificacionNoRegistrada(numero.toString()));
-        }else{
-            throw new RequestException("code", HttpStatus.NOT_FOUND, ErrorsUtils.identificacionNoRegistrada(numero.toString()));
+    ) throws Exception {
+        ClienteFileDto clienteFile = manejadorCliente.buscarPorIdentificacionFile(numero);
+        if (clienteFile.getTipoDocumento().equals(tipo)) {
+            return new ResponseEntity(clienteFile, HttpStatus.OK);
         }
+        throw new RequestException("code", HttpStatus.NOT_FOUND, ErrorsUtils.identificacionNoRegistrada(numero.toString()));
     }
 }
