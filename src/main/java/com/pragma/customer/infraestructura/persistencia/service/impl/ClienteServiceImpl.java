@@ -5,6 +5,7 @@ import com.pragma.customer.dominio.modelo.ClienteDto;
 import com.pragma.customer.dominio.modelo.ClienteFileDto;
 import com.pragma.customer.dominio.modelo.FileImagenDto;
 import com.pragma.customer.dominio.service.ClienteInterfaceService;
+import com.pragma.customer.dominio.service.FileImagenServiceClient;
 import com.pragma.customer.dominio.service.TipoDocumentoInterfaceService;
 import com.pragma.customer.infraestructura.exceptions.LogicException;
 import com.pragma.customer.infraestructura.exceptions.RequestException;
@@ -48,7 +49,7 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     private ClienteInterfaceMapper clienteInterfaceMapper;
 
     @Autowired
-    private FileImagenServiceImpl fileImagenService;
+    private FileImagenServiceClient fileImagenServiceClient;
 
     @Override
     public void save(ClienteDto cliente) throws Exception {
@@ -92,12 +93,12 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     @Override
     public void delete(Integer identificacion) throws Exception{
         if(existsByIdentificacion(identificacion)) {
-            FileImagenDto fileImagenDto = fileImagenService.findByNumeroIdentificacion(identificacion);
+            FileImagenDto fileImagenDto = fileImagenServiceClient.findByNumeroIdentificacion(identificacion);
             if(fileImagenDto == null) {
                 Optional<ClienteEntidad> clienteEntidad = clienteInterfaceRepository.findByIdentificacion(identificacion);
                 clienteInterfaceRepository.delete(clienteEntidad.get());
             } else {
-                if(fileImagenService.delete(identificacion)==true) {
+                if(fileImagenServiceClient.delete(identificacion)==true) {
                     Optional<ClienteEntidad> clienteEntidad = clienteInterfaceRepository.findByIdentificacion(identificacion);
                     clienteInterfaceRepository.delete(clienteEntidad.get());
                 }
@@ -129,7 +130,7 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     public ClienteFileDto findByIdentificacionFile(Integer identificacion) throws Exception {
             if(existsByIdentificacion(identificacion)) {
                 ClienteDto clienteDto = findByIdentificacion(identificacion);
-                FileImagenDto fileImagenDto = fileImagenService.findByNumeroIdentificacion(identificacion);
+                FileImagenDto fileImagenDto = fileImagenServiceClient.findByNumeroIdentificacion(identificacion);
                 if(fileImagenDto == null) {
                     fileImagenDto = FileImagenDto.builder()
                             .fileName("")
@@ -161,7 +162,8 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     @Override
     public ClienteDto findByIdentificacion(Integer identificacion) throws Exception {
         existsByIdentificacion(identificacion);
-        return clienteInterfaceMapper.toClienteDto(clienteInterfaceRepository.findByIdentificacion(identificacion).get());
+        Optional<ClienteEntidad> clienteEntidad =clienteInterfaceRepository.findByIdentificacion(identificacion);
+        return clienteInterfaceMapper.toClienteDto(clienteEntidad.get());
     }
 
     @Override
