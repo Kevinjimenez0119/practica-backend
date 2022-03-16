@@ -37,7 +37,7 @@ public interface ClienteInterfaceService {
     Page<ClienteDto> findAllPag(Pageable pageable) throws Exception;
 
     //LOGIC
-    boolean validateClient(ClienteDto cliente);
+    boolean validateClient(ClienteDto cliente) throws Exception;
 
     Integer getAgeByDate(Date fechaNacimiento);
 

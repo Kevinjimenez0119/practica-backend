@@ -1,4 +1,4 @@
-package com.pragma.customer.service;
+package com.pragma.customer.service.cliente;
 
 import com.pragma.customer.data.DataTest;
 import com.pragma.customer.dominio.modelo.ClienteDto;
@@ -17,6 +17,8 @@ import com.pragma.customer.infraestructura.persistencia.repository.TipoDocumento
 import com.pragma.customer.infraestructura.persistencia.service.impl.ClienteServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -28,27 +30,27 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class ServiceTest {
 
-    @Autowired
+    @InjectMocks
     private ClienteServiceImpl clienteService;
 
-    @MockBean
+    @Mock
     private ClienteInterfaceRepository clienteInterfaceRepository;
 
-    @MockBean
+    @Mock
     private TipoDocumentoInterfaceReporsitory tipoDocumentoInterfaceReporsitory;
 
-    @MockBean
+    @Mock
     private ClienteInterfaceMapper clienteInterfaceMapper;
 
-    @MockBean
+    @Mock
     private TipoDocumentoInterfaceService tipoDocumentoInterfaceService;
 
-    @MockBean
+    @Mock
     private FileImagenServiceClient fileImagenServiceClient;
 
     ClienteDto clienteDto;

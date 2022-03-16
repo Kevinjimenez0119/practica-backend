@@ -53,6 +53,7 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
 
     @Override
     public void save(ClienteDto cliente) throws Exception {
+        validateClient(cliente);
         if(!clienteInterfaceRepository.existsByIdentificacion(cliente.getIdentificacion())) {
             if (tipoDocumentoInterfaceService.existsByTipoDocumento(cliente.getTipoDocumento())) {
                 Optional<TipoDocumentoEntidad> tipoDocumentoEntidad = tipoDocumentoInterfaceReporsitory.findByTipoDocumento(cliente.getTipoDocumento());
@@ -208,8 +209,36 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     }
 
     @Override
-    public boolean validateClient(ClienteDto cliente) {
-        return false;
+    public boolean validateClient(ClienteDto cliente) throws Exception {
+        if (cliente.getNombres().equals("") || cliente.getNombres().equals(null))
+        {
+            throw new LogicException("code", HttpStatus.BAD_REQUEST, "El nombre no puede ser vacio");
+        }
+        if (cliente.getApellidos().equals("") || cliente.getApellidos().equals(null))
+        {
+            throw new LogicException("code", HttpStatus.BAD_REQUEST, "El apellido no puede ser vacio");
+        }
+        if (cliente.getEdad().equals(null))
+        {
+            throw new LogicException("code", HttpStatus.BAD_REQUEST, "La edad no puede ser vacio o tiene letras");
+        }
+        if (cliente.getIdentificacion().equals(null))
+        {
+            throw new LogicException("code", HttpStatus.BAD_REQUEST, "La identificacion no puede ser vacio o tiene letras");
+        }
+        if (cliente.getCiudadNacimiento().equals("") || cliente.getCiudadNacimiento().equals(null))
+        {
+            throw new LogicException("code", HttpStatus.BAD_REQUEST, "La ciudad no puede ser vacio");
+        }
+        if (cliente.getFechaNacimiento().equals("") || cliente.getFechaNacimiento().equals(null))
+        {
+            throw new LogicException("code", HttpStatus.BAD_REQUEST, "La fecha no puede ser vacio, formato:");
+        }
+        if (cliente.getTipoDocumento().equals("") || cliente.getTipoDocumento().equals(null))
+        {
+            throw new LogicException("code", HttpStatus.BAD_REQUEST, "El tipo de documento no puede ser vacio:");
+        }
+        return true;
     }
 
     @Override

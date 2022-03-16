@@ -27,6 +27,10 @@ public class DataTest {
         return  new TipoDocumentoEntidad(1,"CC");
     }
 
+    public static TipoDocumentoDto tipoDto() {
+        return  new TipoDocumentoDto(1,"CC");
+    }
+
     public static FileImagenDto fileImagenDto() {
         return new FileImagenDto("base", 100505349, "prueba.jpg", "image/jpg");
     }

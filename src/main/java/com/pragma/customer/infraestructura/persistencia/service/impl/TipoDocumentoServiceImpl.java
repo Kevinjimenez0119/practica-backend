@@ -34,9 +34,6 @@ public class TipoDocumentoServiceImpl implements TipoDocumentoInterfaceService {
     private TipoDocumentoInterfaceMapper tipoDocumentoInterfaceMapper;
 
     @Autowired
-    private ClienteInterfaceRepository clienteInterfaceRepository;
-
-    @Autowired
     private ClienteInterfaceService clienteInterfaceService;
 
     @Override
