@@ -12,11 +12,11 @@ import java.util.List;
 public interface ClienteInterfaceService {
 
     //CRUD
-    void save(ClienteDto cliente) throws Exception;
+    boolean save(ClienteDto cliente) throws Exception;
 
-    void update(ClienteDto cliente) throws Exception;
+    boolean update(ClienteDto cliente) throws Exception;
 
-    void delete(Integer id) throws Exception;
+    boolean delete(Integer id) throws Exception;
 
     List<ClienteDto> findAll() throws Exception;
 
@@ -36,11 +36,5 @@ public interface ClienteInterfaceService {
     //SORTING
     Page<ClienteDto> findAllPag(Pageable pageable) throws Exception;
 
-    //LOGIC
-    boolean validateClient(ClienteDto cliente) throws Exception;
-
-    Integer getAgeByDate(Date fechaNacimiento);
-
-    LocalDate getBirthdayDate(Date fechaNacimiento);
 
 }

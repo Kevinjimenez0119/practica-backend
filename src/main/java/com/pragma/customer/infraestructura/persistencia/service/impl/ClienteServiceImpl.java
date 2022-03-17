@@ -52,8 +52,7 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     private FileImagenServiceClient fileImagenServiceClient;
 
     @Override
-    public void save(ClienteDto cliente) throws Exception {
-        validateClient(cliente);
+    public boolean save(ClienteDto cliente) throws Exception {
         if(!clienteInterfaceRepository.existsByIdentificacion(cliente.getIdentificacion())) {
             if (tipoDocumentoInterfaceService.existsByTipoDocumento(cliente.getTipoDocumento())) {
                 Optional<TipoDocumentoEntidad> tipoDocumentoEntidad = tipoDocumentoInterfaceReporsitory.findByTipoDocumento(cliente.getTipoDocumento());
@@ -67,14 +66,16 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
                         .identificacion(cliente.getIdentificacion())
                         .build();
                 clienteInterfaceRepository.save(clienteEntidad);
+                return true;
             }
+            return false;
         } else {
             throw new RequestException("code", HttpStatus.BAD_REQUEST, ErrorsUtils.identificacionYaRegistrada(cliente.getIdentificacion().toString()));
         }
     }
 
     @Override
-    public void update(ClienteDto cliente) throws Exception{
+    public boolean update(ClienteDto cliente) throws Exception{
         if(existsByIdentificacion(cliente.getIdentificacion())) {
             if(tipoDocumentoInterfaceService.existsByTipoDocumento(cliente.getTipoDocumento())) {
                 TipoDocumentoEntidad tipoDocumentoEntidad = tipoDocumentoInterfaceReporsitory.findByTipoDocumento(cliente.getTipoDocumento()).get();
@@ -87,24 +88,31 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
                 clienteUpdate.setFechaNacimiento(cliente.getFechaNacimiento());
                 clienteUpdate.setIdentificacion((cliente.getIdentificacion()));
                 clienteInterfaceRepository.save(clienteUpdate);
+                return true;
             }
+            return false;
         }
+        return false;
     }
 
     @Override
-    public void delete(Integer identificacion) throws Exception{
+    public boolean delete(Integer identificacion) throws Exception{
         if(existsByIdentificacion(identificacion)) {
             FileImagenDto fileImagenDto = fileImagenServiceClient.findByNumeroIdentificacion(identificacion);
             if(fileImagenDto == null) {
                 Optional<ClienteEntidad> clienteEntidad = clienteInterfaceRepository.findByIdentificacion(identificacion);
                 clienteInterfaceRepository.delete(clienteEntidad.get());
+                return true;
             } else {
                 if(fileImagenServiceClient.delete(identificacion)==true) {
                     Optional<ClienteEntidad> clienteEntidad = clienteInterfaceRepository.findByIdentificacion(identificacion);
                     clienteInterfaceRepository.delete(clienteEntidad.get());
+                    return true;
                 }
+                return false;
             }
         }
+        return false;
     }
 
     @Override
@@ -119,12 +127,7 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
 
     @Override
     public ClienteDto findById(Integer id) {
-        try {
-            return clienteInterfaceMapper.toClienteDto(clienteInterfaceRepository.findById(id).get());
-        } catch (Exception e) {
-            logger.error("Error al buscar cliente por id", e);
-        }
-        return null;
+        return clienteInterfaceMapper.toClienteDto(clienteInterfaceRepository.findById(id).get());
     }
 
     @Override
@@ -206,92 +209,5 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
         }
         Page<ClienteDto> clienteDtoPageList = new PageImpl<>(clienteDtoList);
         return clienteDtoPageList;
-    }
-
-    @Override
-    public boolean validateClient(ClienteDto cliente) throws Exception {
-        if (cliente.getNombres().equals("") || cliente.getNombres().equals(null))
-        {
-            throw new LogicException("code", HttpStatus.BAD_REQUEST, "El nombre no puede ser vacio");
-        }
-        if (cliente.getApellidos().equals("") || cliente.getApellidos().equals(null))
-        {
-            throw new LogicException("code", HttpStatus.BAD_REQUEST, "El apellido no puede ser vacio");
-        }
-        if (cliente.getEdad().equals(null))
-        {
-            throw new LogicException("code", HttpStatus.BAD_REQUEST, "La edad no puede ser vacio o tiene letras");
-        }
-        if (cliente.getIdentificacion().equals(null))
-        {
-            throw new LogicException("code", HttpStatus.BAD_REQUEST, "La identificacion no puede ser vacio o tiene letras");
-        }
-        if (cliente.getCiudadNacimiento().equals("") || cliente.getCiudadNacimiento().equals(null))
-        {
-            throw new LogicException("code", HttpStatus.BAD_REQUEST, "La ciudad no puede ser vacio");
-        }
-        if (cliente.getFechaNacimiento().equals("") || cliente.getFechaNacimiento().equals(null))
-        {
-            throw new LogicException("code", HttpStatus.BAD_REQUEST, "La fecha no puede ser vacio, formato:");
-        }
-        if (cliente.getTipoDocumento().equals("") || cliente.getTipoDocumento().equals(null))
-        {
-            throw new LogicException("code", HttpStatus.BAD_REQUEST, "El tipo de documento no puede ser vacio:");
-        }
-        return true;
-    }
-
-    @Override
-    public Integer getAgeByDate(Date fechaNacimiento) {
-        try {
-            java.sql.Date bDate = new java.sql.Date(fechaNacimiento.getTime());
-            LocalDate fechaNac = bDate.toLocalDate();
-            LocalDate ahora = LocalDate.now();
-
-            Period periodo = Period.between(fechaNac, ahora);
-
-            return periodo.getYears();
-        } catch (Exception e) {
-            logger.error("Error al calcular edad", e);
-        }
-        return null;
-    }
-
-    @Override
-    public LocalDate getBirthdayDate(Date fechaNacimiento) {
-        try {
-            /*Fecha actual*/
-            LocalDate today = LocalDate.now();
-
-
-            /*Convertir Date a LocalDate*/
-            java.sql.Date bDate = new java.sql.Date(fechaNacimiento.getTime());
-            LocalDate fechaNac = bDate.toLocalDate();
-            LocalDate nextBDay = fechaNac.withYear(today.getYear());
-
-            /*Si el cumpleaños ya ocurrió este año, agrega 1 año*/
-            if (nextBDay.isBefore(today) || nextBDay.isEqual(today)) {
-                nextBDay = nextBDay.plusYears(1);
-            }
-
-            Period p = Period.between(today, nextBDay);
-            long totalDias = ChronoUnit.DAYS.between(today, nextBDay);
-
-            /*Cuando totalDias=365 hoy es el cumpleaños*/
-
-            if (totalDias == 365) {
-
-                return today;
-
-            } else {
-
-                today = today.plusMonths(p.getMonths());
-                return today.plusDays(p.getDays());
-            }
-
-        }catch (DateTimeParseException e) {
-            logger.error("Error al calcular la fecha", e);
-        }
-        return null;
     }
 }

@@ -7,11 +7,11 @@ import java.util.List;
 public interface TipoDocumentoInterfaceService {
 
     //CRUD
-    void save(TipoDocumentoDto tipoDocumentoDto) throws Exception;
+    boolean save(TipoDocumentoDto tipoDocumentoDto) throws Exception;
 
-    void delete(String tipo) throws Exception;
+    boolean delete(String tipo) throws Exception;
 
-    void update(TipoDocumentoDto tipoDocumentoDto) throws Exception;
+    boolean update(TipoDocumentoDto tipoDocumentoDto) throws Exception;
 
     List<TipoDocumentoDto> findAll() throws Exception;
 

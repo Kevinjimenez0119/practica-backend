@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,11 +52,14 @@ public class EndpointsTest {
     @InjectMocks
     EndpointListarPorEdad endpointListarPorEdad;
 
-    @Mock
-    ManejadorCliente manejadorCliente;
+    @InjectMocks
+    EndpointObtenerEdadPorFechaNacimiento endpointObtenerEdadPorFechaNacimiento;
+
+    @InjectMocks
+    EndpointObtenerFechaCumpleaños endpointObtenerFechaCumpleaños;
 
     @Mock
-    ClienteUseCase clienteUseCase;
+    ManejadorCliente manejadorCliente;
 
     ClienteDto clienteDto;
     ClienteEntidad clienteEntidad;
@@ -76,8 +80,6 @@ public class EndpointsTest {
     void findByIdentificacion() throws Exception {
         ResponseEntity<?> fileResponseEntity = new ResponseEntity(clienteDto, HttpStatus.OK);
 
-        when(clienteUseCase.buscarPorIdentificacion(clienteDto.getIdentificacion())).thenReturn(clienteDto);
-
         when(manejadorCliente.buscarPorIdentificacion(clienteDto.getIdentificacion())).thenReturn(clienteDto);
 
         ResponseEntity<?> response = endpointBuscarPorSoloIdentificacion.obtenerPorIdentificacion(clienteDto.getIdentificacion());
@@ -96,8 +98,6 @@ public class EndpointsTest {
 
         ResponseEntity<?> fileResponseEntity = new ResponseEntity(clienteDtoList, HttpStatus.OK);
 
-        when(clienteUseCase.listar()).thenReturn(clienteDtoList);
-
         when(manejadorCliente.listar()).thenReturn(clienteDtoList);
 
         ResponseEntity<?> response = endpointListarClientes.listarClientes();
@@ -111,8 +111,6 @@ public class EndpointsTest {
         clienteDtoList.add(clienteDto);
 
         ResponseEntity<?> fileResponseEntity = new ResponseEntity(clienteDtoList, HttpStatus.OK);
-
-        when(clienteUseCase.listarPorEdadMayor(19)).thenReturn(clienteDtoList);
 
         when(manejadorCliente.listarPorEdadMayor(19)).thenReturn(clienteDtoList);
 
@@ -132,7 +130,6 @@ public class EndpointsTest {
 
     @Test
     void delete() throws Exception {
-
         ResponseEntity<?> fileResponseEntity = new ResponseEntity(HttpStatus.OK);
 
         ResponseEntity<?> response = endpointEliminarCliente.eliminar(clienteDto.getIdentificacion());
@@ -142,7 +139,6 @@ public class EndpointsTest {
 
     @Test
     void update() throws Exception {
-
         ResponseEntity<?> fileResponseEntity = new ResponseEntity(HttpStatus.OK);
 
         ResponseEntity<?> response = endpointActualizarCliente.actualizar(clienteDto);
@@ -154,13 +150,39 @@ public class EndpointsTest {
     void findByIdentificacionFile() throws Exception {
         ResponseEntity<?> fileResponseEntity = new ResponseEntity(clienteFileDto, HttpStatus.OK);
 
-        when(clienteUseCase.buscarPorIdentificacionFile(clienteDto.getIdentificacion())).thenReturn(clienteFileDto);
-
         when(manejadorCliente.buscarPorIdentificacionFile(clienteDto.getIdentificacion())).thenReturn(clienteFileDto);
 
         ResponseEntity<?> response = endpointObtenerClienteConFile.obtenerPorIdentificacion(clienteDto.getTipoDocumento(), clienteDto.getIdentificacion());
 
         assertEquals(fileResponseEntity, response);
 
+    }
+
+    @Test
+    void Age() throws Exception {
+        ResponseEntity<?> fileResponseEntity = new ResponseEntity(21, HttpStatus.OK);
+
+        when(manejadorCliente.buscarPorIdentificacion(clienteDto.getIdentificacion())).thenReturn(clienteDto);
+
+        when(manejadorCliente.edadPorFecha(clienteDto.getFechaNacimiento())).thenReturn(21);
+
+        ResponseEntity<?> response = endpointObtenerEdadPorFechaNacimiento.obtenerEdadPorIdentificacion(clienteDto.getIdentificacion());
+
+        assertEquals(fileResponseEntity, response);
+    }
+
+    @Test
+    void birthDay() throws Exception {
+        LocalDate localDate = LocalDate.now();
+
+        ResponseEntity<?> fileResponseEntity = new ResponseEntity(localDate, HttpStatus.OK);
+
+        when(manejadorCliente.buscarPorIdentificacion(clienteDto.getIdentificacion())).thenReturn(clienteDto);
+
+        when(manejadorCliente.birthDay(clienteDto.getFechaNacimiento())).thenReturn(LocalDate.now());
+
+        ResponseEntity<?> response = endpointObtenerFechaCumpleaños.obtenerFechaPorIdentificacion(clienteDto.getIdentificacion());
+
+        assertEquals(fileResponseEntity, response);
     }
 }

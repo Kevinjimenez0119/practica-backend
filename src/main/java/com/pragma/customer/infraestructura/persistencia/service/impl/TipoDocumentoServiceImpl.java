@@ -8,7 +8,6 @@ import com.pragma.customer.infraestructura.exceptions.LogicException;
 import com.pragma.customer.infraestructura.exceptions.RequestException;
 import com.pragma.customer.infraestructura.mappers.TipoDocumentoInterfaceMapper;
 import com.pragma.customer.infraestructura.persistencia.entity.TipoDocumentoEntidad;
-import com.pragma.customer.infraestructura.persistencia.repository.ClienteInterfaceRepository;
 import com.pragma.customer.infraestructura.persistencia.repository.TipoDocumentoInterfaceReporsitory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,36 +35,41 @@ public class TipoDocumentoServiceImpl implements TipoDocumentoInterfaceService {
     private ClienteInterfaceService clienteInterfaceService;
 
     @Override
-    public void save(TipoDocumentoDto tipoDocumentoDto) throws Exception{
+    public boolean save(TipoDocumentoDto tipoDocumentoDto) throws Exception{
         if (!tipoDocumentoInterfaceReporsitory.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())) {
             TipoDocumentoEntidad tipoDocumentoEntidad = TipoDocumentoEntidad.builder()
                     .tipoDocumento(tipoDocumentoDto.getTipoDocumento())
                     .build();
             tipoDocumentoInterfaceReporsitory.save(tipoDocumentoEntidad);
+            return true;
         } else {
             throw new RequestException("code", HttpStatus.BAD_REQUEST, ErrorsUtils.tipoIdentificacionRegistrada(tipoDocumentoDto.getTipoDocumento()));
         }
     }
 
     @Override
-    public void delete(String tipo) throws Exception {
+    public boolean delete(String tipo) throws Exception {
         if(existsByTipoDocumento(tipo)) {
             if(!clienteInterfaceService.existsByTipoDocumentoEntidad(tipo)) {
                 Optional<TipoDocumentoEntidad> tipoDocumentoEntidad = tipoDocumentoInterfaceReporsitory.findByTipoDocumento(tipo);
                 tipoDocumentoInterfaceReporsitory.delete(tipoDocumentoEntidad.get());
+                return true;
             } else {
                 throw new RequestException("code", HttpStatus.BAD_REQUEST, "el tipo de documento lo tienen algunos clientes");
             }
         }
+        return false;
     }
 
     @Override
-    public void update(TipoDocumentoDto tipoDocumentoDto) throws Exception {
+    public boolean update(TipoDocumentoDto tipoDocumentoDto) throws Exception {
         if(existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())) {
             Optional<TipoDocumentoEntidad> tipoDocumentoEntidad = tipoDocumentoInterfaceReporsitory.findByTipoDocumento(tipoDocumentoDto.getTipoDocumento());
             tipoDocumentoEntidad.get().setTipoDocumento(tipoDocumentoDto.getTipoDocumento());
             tipoDocumentoInterfaceReporsitory.save(tipoDocumentoEntidad.get());
+            return true;
         }
+        return false;
     }
 
     @Override
@@ -81,12 +84,7 @@ public class TipoDocumentoServiceImpl implements TipoDocumentoInterfaceService {
 
     @Override
     public TipoDocumentoDto findById(Integer id) {
-        try {
-            return tipoDocumentoInterfaceMapper.toTipoDocumentoDto(tipoDocumentoInterfaceReporsitory.findById(id).get());
-        } catch (Exception e) {
-            logger.error("Error busqueda de tipo por id", e);
-        }
-        return null;
+        return tipoDocumentoInterfaceMapper.toTipoDocumentoDto(tipoDocumentoInterfaceReporsitory.findById(id).get());
     }
 
     @Override

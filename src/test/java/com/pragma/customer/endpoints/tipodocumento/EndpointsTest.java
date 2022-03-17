@@ -94,7 +94,6 @@ public class EndpointsTest {
 
     @Test
     void delete() throws Exception {
-
         ResponseEntity<?> fileResponseEntity = new ResponseEntity(HttpStatus.OK);
 
         ResponseEntity<?> response = endpointEliminarTipoDocumento.eliminar(tipoDocumentoDto.getTipoDocumento());
@@ -104,7 +103,6 @@ public class EndpointsTest {
 
     @Test
     void update() throws Exception {
-
         ResponseEntity<?> fileResponseEntity = new ResponseEntity(HttpStatus.OK);
 
         ResponseEntity<?> response = endpointActualizarTipoDocumento.actualizar(tipoDocumentoDto);
