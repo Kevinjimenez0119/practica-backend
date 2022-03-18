@@ -1,16 +1,17 @@
 package com.pragma.customer.dominio.useCase.cliente;
 
+import com.pragma.customer.aplicacion.utils.ErrorsUtils;
 import com.pragma.customer.dominio.modelo.ClienteDto;
 import com.pragma.customer.dominio.modelo.ClienteFileDto;
 import com.pragma.customer.dominio.service.ClienteInterfaceService;
+import com.pragma.customer.dominio.useCase.tipodocumento.TipoDocumentoUseCase;
 import com.pragma.customer.infraestructura.exceptions.LogicException;
-import com.pragma.customer.infraestructura.persistencia.service.impl.ClienteServiceImpl;
+import com.pragma.customer.infraestructura.exceptions.RequestException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -26,36 +27,70 @@ public class ClienteUseCase {
 
     private final ClienteInterfaceService clienteInterfaceService;
 
+    private final TipoDocumentoUseCase tipoDocumentoUseCase;
+
     public boolean guardar(ClienteDto cliente) throws Exception {
-        return clienteInterfaceService.save(cliente);
+        if(!clienteInterfaceService.existsByIdentificacion(cliente.getIdentificacion())) {
+            tipoDocumentoUseCase.existsByTipoDocumento(cliente.getTipoDocumento());
+            return clienteInterfaceService.save(cliente);
+        } else {
+            throw new RequestException(400, ErrorsUtils.identificacionYaRegistrada(cliente.getIdentificacion().toString()));
+        }
     }
 
     public boolean actualizar(ClienteDto cliente) throws Exception {
+        existsByIdentificacion(cliente.getIdentificacion());
+        tipoDocumentoUseCase.existsByTipoDocumento(cliente.getTipoDocumento());
         return clienteInterfaceService.update(cliente);
     }
 
     public boolean eliminar(Integer id) throws Exception {
+        existsByIdentificacion(id);
         return clienteInterfaceService.delete(id);
     }
 
     public List<ClienteDto> listar() throws Exception {
-        return clienteInterfaceService.findAll();
+        List<ClienteDto> clienteDtoList = clienteInterfaceService.findAll();
+        if(clienteDtoList.isEmpty())
+        {
+            throw new LogicException(204, ErrorsUtils.sinRegistros());
+        }
+        return clienteDtoList;
     }
 
     public ClienteDto buscarPorIdentificacion(Integer identificacion) throws Exception {
+        existsByIdentificacion(identificacion);
         return clienteInterfaceService.findByIdentificacion(identificacion);
     }
 
     public ClienteFileDto buscarPorIdentificacionFile(Integer identificacion) throws Exception {
+        existsByIdentificacion(identificacion);
         return clienteInterfaceService.findByIdentificacionFile(identificacion);
     }
 
     public List<ClienteDto> listarPorEdadMayor(Integer edad) throws Exception {
-        return clienteInterfaceService.findByAge(edad);
+        List<ClienteDto> clienteDtoList = clienteInterfaceService.findByAge(edad);
+        if(clienteDtoList.isEmpty())
+        {
+            throw new LogicException(204, ErrorsUtils.sinRegistros());
+        }
+        return clienteDtoList;
     }
 
     public Page<ClienteDto> listarPag(Pageable pageable) throws Exception {
         return clienteInterfaceService.findAllPag(pageable);
+    }
+
+    public boolean existsByTipoDocumentoEntidad(String tipo) throws Exception {
+        return clienteInterfaceService.existsByTipoDocumentoEntidad(tipo);
+    }
+
+    public boolean existsByIdentificacion(Integer identificacion) throws Exception {
+        if(clienteInterfaceService.existsByIdentificacion(identificacion)) {
+            return true;
+        } else {
+            throw new RequestException(404, ErrorsUtils.identificacionNoRegistrada(identificacion.toString()));
+        }
     }
 
     public Integer getAgeByDate(Date fechaNacimiento) {

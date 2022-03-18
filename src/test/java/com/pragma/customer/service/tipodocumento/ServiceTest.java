@@ -4,6 +4,7 @@ import com.pragma.customer.data.DataTest;
 import com.pragma.customer.dominio.modelo.TipoDocumentoDto;
 import com.pragma.customer.dominio.service.ClienteInterfaceService;
 import com.pragma.customer.dominio.service.TipoDocumentoInterfaceService;
+import com.pragma.customer.dominio.useCase.cliente.ClienteUseCase;
 import com.pragma.customer.dominio.useCase.tipodocumento.TipoDocumentoUseCase;
 import com.pragma.customer.infraestructura.exceptions.LogicException;
 import com.pragma.customer.infraestructura.exceptions.RequestException;
@@ -22,8 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -35,6 +35,9 @@ public class ServiceTest {
     @Mock
     TipoDocumentoInterfaceService tipoDocumentoInterfaceService;
 
+    @Mock
+    ClienteUseCase clienteUseCase;
+
     @InjectMocks
     TipoDocumentoServiceImpl tipoDocumentoService;
 
@@ -43,9 +46,6 @@ public class ServiceTest {
 
     @Mock
     TipoDocumentoInterfaceMapper tipoDocumentoInterfaceMapper;
-
-    @Mock
-    ClienteInterfaceService clienteInterfaceService;
 
     TipoDocumentoDto tipoDocumentoDto;
     TipoDocumentoEntidad tipoDocumentoEntidad;
@@ -69,7 +69,6 @@ public class ServiceTest {
 
     @Test
     void findByTipoDocumento() throws Exception {
-        when(tipoDocumentoInterfaceReporsitory.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenReturn(true);
 
         when(tipoDocumentoInterfaceReporsitory.findByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenReturn(Optional.of(tipoDocumentoEntidad));
 
@@ -78,6 +77,10 @@ public class ServiceTest {
         TipoDocumentoDto tipoDocumentoDtoActual = tipoDocumentoService.findByTipoDocumento(tipoDocumentoDto.getTipoDocumento());
 
         assertEquals(tipoDocumentoDto, tipoDocumentoDtoActual);
+
+        when(tipoDocumentoInterfaceService.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenReturn(true);
+
+        when(tipoDocumentoUseCase.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenReturn(true);
 
         when(tipoDocumentoService.findByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenReturn(tipoDocumentoDto);
 
@@ -90,9 +93,9 @@ public class ServiceTest {
 
     @Test
     void findByTipoDocumentoException() throws Exception {
-        when(tipoDocumentoInterfaceReporsitory.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenThrow(RequestException.class);
+        when(tipoDocumentoInterfaceService.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenThrow(RequestException.class);
 
-        assertThrows(RequestException.class, () -> tipoDocumentoService.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento()));
+        assertThrows(RequestException.class, () -> tipoDocumentoUseCase.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento()));
     }
 
     @Test
@@ -128,24 +131,24 @@ public class ServiceTest {
 
         List<TipoDocumentoDto> tipoDocumentoDtoList = new ArrayList<>();
 
-        when(tipoDocumentoInterfaceReporsitory.findAll()).thenReturn(tipoDocumentoEntidadList);
+        when(tipoDocumentoService.findAll()).thenReturn(tipoDocumentoDtoList);
 
-        when(tipoDocumentoInterfaceMapper.toTipoDocumentoListDto(tipoDocumentoEntidadList)).thenReturn(tipoDocumentoDtoList);
+        when(tipoDocumentoInterfaceService.findAll()).thenReturn(tipoDocumentoDtoList);
 
-        assertThrows(LogicException.class, () -> tipoDocumentoService.findAll());
+        assertThrows(LogicException.class, () -> tipoDocumentoUseCase.listar());
     }
 
     @Test
     void ExceptionExist() throws Exception {
-        when(tipoDocumentoInterfaceReporsitory.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenReturn(false);
+        when(tipoDocumentoInterfaceService.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenReturn(false);
 
-        assertThrows(RequestException.class, () -> tipoDocumentoService.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento()));
+        assertThrows(RequestException.class, () -> tipoDocumentoUseCase.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento()));
 
     }
 
     @Test
     void save() throws Exception {
-        when(tipoDocumentoInterfaceReporsitory.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenReturn(false);
+        when(tipoDocumentoInterfaceMapper.toTipoDocumentoEntidad(tipoDocumentoDto)).thenReturn(tipoDocumentoEntidad);
 
         tipoDocumentoInterfaceReporsitory.save(tipoDocumentoEntidad);
 
@@ -153,69 +156,71 @@ public class ServiceTest {
 
         assertEquals(true, response);
 
+        when(tipoDocumentoInterfaceService.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenReturn(false);
+
         when(tipoDocumentoService.save(tipoDocumentoDto)).thenReturn(true);
 
         when(tipoDocumentoInterfaceService.save(tipoDocumentoDto)).thenReturn(true);
 
         boolean responseActual = tipoDocumentoUseCase.guardar(tipoDocumentoDto);
 
-        assertEquals(true, responseActual);
+        assertTrue(responseActual);
     }
 
     @Test
     void saveExceptionExist() throws Exception {
-        when(tipoDocumentoInterfaceReporsitory.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenReturn(true);
+        when(tipoDocumentoInterfaceService.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenReturn(true);
 
-        assertThrows(RequestException.class, () -> tipoDocumentoService.save(tipoDocumentoDto));
+        assertThrows(RequestException.class, () -> tipoDocumentoUseCase.guardar(tipoDocumentoDto));
     }
 
     @Test
     void delete() throws Exception {
-        when(tipoDocumentoInterfaceReporsitory.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenReturn(true);
-
-        when(tipoDocumentoService.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenReturn(true);
-
-        when(clienteInterfaceService.existsByTipoDocumentoEntidad(tipoDocumentoDto.getTipoDocumento())).thenReturn(false);
-
         when(tipoDocumentoInterfaceReporsitory.findByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenReturn(Optional.ofNullable(tipoDocumentoEntidad));
 
         tipoDocumentoInterfaceReporsitory.delete(tipoDocumentoEntidad);
 
         boolean response = tipoDocumentoService.delete(tipoDocumentoDto.getTipoDocumento());
 
-        assertEquals(true, response);
+        assertTrue(response);
+
+        when(tipoDocumentoService.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenReturn(true);
+
+        when(tipoDocumentoInterfaceService.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenReturn(true);
+
+        when(clienteUseCase.existsByTipoDocumentoEntidad(tipoDocumentoDto.getTipoDocumento())).thenReturn(false);
 
         when(tipoDocumentoInterfaceService.delete(tipoDocumentoDto.getTipoDocumento())).thenReturn(true);
 
         boolean responseActual = tipoDocumentoUseCase.eliminar(tipoDocumentoDto.getTipoDocumento());
 
-        assertEquals(true, responseActual);
+        assertTrue(responseActual);
     }
 
     @Test
     void deleteException() throws Exception {
-        when(tipoDocumentoInterfaceReporsitory.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenReturn(true);
-
         when(tipoDocumentoService.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenReturn(true);
 
-        when(clienteInterfaceService.existsByTipoDocumentoEntidad(tipoDocumentoDto.getTipoDocumento())).thenReturn(true);
+        when(tipoDocumentoInterfaceService.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenReturn(true);
 
-        assertThrows(RequestException.class, () -> tipoDocumentoService.delete(tipoDocumentoDto.getTipoDocumento()));
+        when(clienteUseCase.existsByTipoDocumentoEntidad(tipoDocumentoDto.getTipoDocumento())).thenReturn(true);
+
+        assertThrows(RequestException.class, () -> tipoDocumentoUseCase.eliminar(tipoDocumentoDto.getTipoDocumento()));
     }
 
     @Test
     void update() throws Exception {
-        when(tipoDocumentoInterfaceReporsitory.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenReturn(true);
-
-        when(tipoDocumentoService.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenReturn(true);
-
         when(tipoDocumentoInterfaceReporsitory.findByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenReturn(Optional.ofNullable(tipoDocumentoEntidad));
 
         tipoDocumentoInterfaceReporsitory.save(tipoDocumentoEntidad);
 
         boolean response = tipoDocumentoService.update(tipoDocumentoDto);
 
-        assertEquals(true, response);
+        assertTrue(response);
+
+        when(tipoDocumentoService.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenReturn(true);
+
+        when(tipoDocumentoInterfaceService.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())).thenReturn(true);
 
         when(tipoDocumentoService.update(tipoDocumentoDto)).thenReturn(true);
 
@@ -223,6 +228,6 @@ public class ServiceTest {
 
         boolean responseActual = tipoDocumentoUseCase.actualizar(tipoDocumentoDto);
 
-        assertEquals(true, responseActual);
+        assertTrue(responseActual);
     }
 }

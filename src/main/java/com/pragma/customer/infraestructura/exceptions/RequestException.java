@@ -6,13 +6,10 @@ import org.springframework.http.HttpStatus;
 @Data
 public class RequestException extends RuntimeException{
 
-    private String code;
+    private Integer code;
 
-    private HttpStatus status;
-
-    public RequestException(String code, HttpStatus status, String message) {
+    public RequestException(Integer code, String message) {
         super(message);
         this.code = code;
-        this.status = status;
     }
 }

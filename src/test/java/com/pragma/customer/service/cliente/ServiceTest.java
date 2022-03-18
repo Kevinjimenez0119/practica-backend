@@ -9,6 +9,7 @@ import com.pragma.customer.dominio.service.ClienteInterfaceService;
 import com.pragma.customer.dominio.service.FileImagenServiceClient;
 import com.pragma.customer.dominio.service.TipoDocumentoInterfaceService;
 import com.pragma.customer.dominio.useCase.cliente.ClienteUseCase;
+import com.pragma.customer.dominio.useCase.tipodocumento.TipoDocumentoUseCase;
 import com.pragma.customer.infraestructura.exceptions.LogicException;
 import com.pragma.customer.infraestructura.exceptions.RequestException;
 import com.pragma.customer.infraestructura.mappers.ClienteInterfaceMapper;
@@ -21,17 +22,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -42,6 +40,9 @@ public class ServiceTest {
 
     @Mock
     ClienteInterfaceService clienteInterfaceService;
+
+    @Mock
+    TipoDocumentoUseCase tipoDocumentoUseCase;
 
     @InjectMocks
     ClienteServiceImpl clienteService;
@@ -54,9 +55,6 @@ public class ServiceTest {
 
     @Mock
     ClienteInterfaceMapper clienteInterfaceMapper;
-
-    @Mock
-    TipoDocumentoInterfaceService tipoDocumentoInterfaceService;
 
     @Mock
     FileImagenServiceClient fileImagenServiceClient;
@@ -90,9 +88,6 @@ public class ServiceTest {
 
     @Test
     void findByIdentificacion() throws Exception {
-
-        when(clienteInterfaceRepository.existsByIdentificacion(clienteDto.getIdentificacion())).thenReturn(true);
-
         when(clienteInterfaceRepository.findByIdentificacion(clienteDto.getIdentificacion())).thenReturn(Optional.of(clienteEntidad));
 
         when(clienteInterfaceMapper.toClienteDto(clienteEntidad)).thenReturn(clienteDto);
@@ -100,6 +95,8 @@ public class ServiceTest {
         ClienteDto clienteActual = clienteService.findByIdentificacion(clienteDto.getIdentificacion());
 
         assertEquals(clienteDto, clienteActual);
+
+        when(clienteInterfaceService.existsByIdentificacion(clienteDto.getIdentificacion())).thenReturn(true);
 
         when(clienteService.findByIdentificacion(clienteDto.getIdentificacion())).thenReturn(clienteDto);
 
@@ -112,9 +109,9 @@ public class ServiceTest {
 
     @Test
     void ExistByIdentificacionException() throws Exception {
-        when(clienteInterfaceRepository.existsByIdentificacion(clienteDto.getIdentificacion())).thenReturn(false);
+        when(clienteInterfaceService.existsByIdentificacion(clienteDto.getIdentificacion())).thenReturn(false);
 
-        assertThrows(RequestException.class, () -> clienteService.findByIdentificacion(clienteDto.getIdentificacion()));
+        assertThrows(RequestException.class, () -> clienteUseCase.buscarPorIdentificacion(clienteDto.getIdentificacion()));
     }
 
     @Test
@@ -150,18 +147,13 @@ public class ServiceTest {
 
         List<ClienteEntidad> clienteEntidadList = new ArrayList<>();
 
-        when(clienteInterfaceRepository.findAll()).thenReturn(clienteEntidadList);
+        when(clienteInterfaceService.findAll()).thenReturn(clienteDtoList);
 
-        when(clienteInterfaceMapper.toClienteListDto(clienteEntidadList)).thenReturn(clienteDtoList);
-
-        assertThrows(LogicException.class, () -> clienteService.findAll());
+        assertThrows(LogicException.class, () -> clienteUseCase.listar());
     }
 
     @Test
     void findByIdentificacionFile() throws Exception {
-
-        when(clienteInterfaceRepository.existsByIdentificacion(clienteDto.getIdentificacion())).thenReturn(true);
-
         when(clienteInterfaceRepository.findByIdentificacion(clienteDto.getIdentificacion())).thenReturn(Optional.of(clienteEntidad));
 
         when(clienteInterfaceMapper.toClienteDto(clienteEntidad)).thenReturn(clienteDto);
@@ -171,6 +163,8 @@ public class ServiceTest {
         ClienteFileDto clienteActual = clienteService.findByIdentificacionFile(clienteDto.getIdentificacion());
 
         assertEquals(clienteFileDto, clienteActual);
+
+        when(clienteInterfaceService.existsByIdentificacion(clienteDto.getIdentificacion())).thenReturn(true);
 
         when(clienteInterfaceService.findByIdentificacionFile(clienteDto.getIdentificacion())).thenReturn(clienteFileDto);
 
@@ -182,8 +176,6 @@ public class ServiceTest {
     @Test
     void findByIdentificacionFilenull() throws Exception {
         ClienteFileDto clienteFileDto = DataTest.clienteFileDtonull();
-
-        when(clienteInterfaceRepository.existsByIdentificacion(clienteDto.getIdentificacion())).thenReturn(true);
 
         when(clienteInterfaceRepository.findByIdentificacion(clienteDto.getIdentificacion())).thenReturn(Optional.of(clienteEntidad));
 
@@ -230,28 +222,24 @@ public class ServiceTest {
 
         List<ClienteEntidad> clienteEntidadList = new ArrayList<>();
 
-        when(clienteInterfaceRepository.findByAge(18)).thenReturn(clienteEntidadList);
+        when(clienteInterfaceService.findByAge(18)).thenReturn(clienteDtoList);
 
-        when(clienteInterfaceMapper.toClienteListDto(clienteEntidadList)).thenReturn(clienteDtoList);
-
-        assertThrows(LogicException.class, () -> clienteService.findByAge(38));
+        assertThrows(LogicException.class, () -> clienteUseCase.listarPorEdadMayor(18));
     }
 
     @Test
     void save() throws Exception {
-        when(clienteInterfaceRepository.existsByIdentificacion(clienteDto.getIdentificacion())).thenReturn(false);
-
-        when(tipoDocumentoInterfaceReporsitory.existsByTipoDocumento(clienteDto.getTipoDocumento())).thenReturn(true);
-
-        when(tipoDocumentoInterfaceService.existsByTipoDocumento(clienteDto.getTipoDocumento())).thenReturn(true);
-
         when(tipoDocumentoInterfaceReporsitory.findByTipoDocumento(clienteDto.getTipoDocumento())).thenReturn(Optional.ofNullable(tipoDocumentoEntidad));
 
         clienteInterfaceRepository.save(clienteEntidad);
 
         boolean response = clienteService.save(clienteDto);
 
-        assertEquals(true, response);
+        assertTrue(response);
+
+        when(clienteInterfaceService.existsByIdentificacion(clienteDto.getIdentificacion())).thenReturn(false);
+
+        when(tipoDocumentoUseCase.existsByTipoDocumento(clienteDto.getTipoDocumento())).thenReturn(true);
 
         when(clienteService.save(clienteDto)).thenReturn(true);
 
@@ -259,26 +247,18 @@ public class ServiceTest {
 
         boolean responseActual = clienteUseCase.guardar(clienteDto);
 
-        assertEquals(true, responseActual);
+        assertTrue(responseActual);
     }
 
     @Test
     void saveException() throws Exception {
-        when(clienteInterfaceRepository.existsByIdentificacion(clienteDto.getIdentificacion())).thenReturn(true);
+        when(clienteInterfaceService.existsByIdentificacion(clienteDto.getIdentificacion())).thenReturn(true);
 
-        assertThrows(RequestException.class, () -> clienteService.save(clienteDto));
+        assertThrows(RequestException.class, () -> clienteUseCase.guardar(clienteDto));
     }
 
     @Test
     void update() throws Exception {
-        when(clienteInterfaceRepository.existsByIdentificacion(clienteDto.getIdentificacion())).thenReturn(true);
-
-        when(clienteService.existsByIdentificacion(clienteDto.getIdentificacion())).thenReturn(true);
-
-        when(tipoDocumentoInterfaceReporsitory.existsByTipoDocumento(clienteDto.getTipoDocumento())).thenReturn(true);
-
-        when(tipoDocumentoInterfaceService.existsByTipoDocumento(clienteDto.getTipoDocumento())).thenReturn(true);
-
         when(tipoDocumentoInterfaceReporsitory.findByTipoDocumento(clienteDto.getTipoDocumento())).thenReturn(Optional.ofNullable(tipoDocumentoEntidad));
 
         when(clienteInterfaceRepository.findByIdentificacion(clienteDto.getIdentificacion())).thenReturn(Optional.ofNullable(clienteEntidad));
@@ -287,7 +267,11 @@ public class ServiceTest {
 
         boolean response = clienteService.update(clienteDto);
 
-        assertEquals(true, response);
+        assertTrue(response);
+
+        when(clienteInterfaceService.existsByIdentificacion(clienteDto.getIdentificacion())).thenReturn(true);
+
+        when(tipoDocumentoUseCase.existsByTipoDocumento(clienteDto.getTipoDocumento())).thenReturn(true);
 
         when(clienteService.update(clienteDto)).thenReturn(true);
 
@@ -295,14 +279,11 @@ public class ServiceTest {
 
         boolean responseActual = clienteUseCase.actualizar(clienteDto);
 
-        assertEquals(true, responseActual);
+        assertTrue(responseActual);
     }
 
     @Test
     void delete() throws Exception {
-        when(clienteInterfaceRepository.existsByIdentificacion(clienteDto.getIdentificacion())).thenReturn(true);
-
-        when(clienteService.existsByIdentificacion(clienteDto.getIdentificacion())).thenReturn(true);
 
         when(fileImagenServiceClient.findByNumeroIdentificacion(clienteDto.getIdentificacion())).thenReturn(fileImagenDto);
 
@@ -314,21 +295,21 @@ public class ServiceTest {
 
         boolean response = clienteService.delete(clienteDto.getIdentificacion());
 
-        assertEquals(true, response);
+        assertTrue(response);
+
+        when(clienteInterfaceService.existsByIdentificacion(clienteDto.getIdentificacion())).thenReturn(true);
+
+        when(clienteUseCase.existsByIdentificacion(clienteDto.getIdentificacion())).thenReturn(true);
 
         when(clienteInterfaceService.delete(clienteDto.getIdentificacion())).thenReturn(true);
 
         boolean responseActual = clienteUseCase.eliminar(clienteDto.getIdentificacion());
 
-        assertEquals(true, responseActual);
+        assertTrue(responseActual);
     }
 
     @Test
     void deleteException() throws Exception {
-        when(clienteInterfaceRepository.existsByIdentificacion(clienteDto.getIdentificacion())).thenReturn(true);
-
-        when(clienteService.existsByIdentificacion(clienteDto.getIdentificacion())).thenReturn(true);
-
         when(fileImagenServiceClient.findByNumeroIdentificacion(clienteDto.getIdentificacion())).thenReturn(fileImagenDto = null);
 
         when(clienteInterfaceRepository.findByIdentificacion(clienteDto.getIdentificacion())).thenReturn(Optional.ofNullable(clienteEntidad));
@@ -337,7 +318,7 @@ public class ServiceTest {
 
         boolean response = clienteService.delete(clienteDto.getIdentificacion());
 
-        assertEquals(true, response);
+        assertTrue(response);
 
     }
 
@@ -349,7 +330,7 @@ public class ServiceTest {
 
         boolean response = clienteService.existsByTipoDocumentoEntidad(clienteDto.getTipoDocumento());
 
-        assertEquals(true, response);
+        assertTrue(response);
     }
 
     @Test
@@ -360,7 +341,7 @@ public class ServiceTest {
 
         boolean response = clienteService.existsByTipoDocumentoEntidad(clienteDto.getTipoDocumento());
 
-        assertEquals(false, response);
+        assertFalse(response);
     }
 
 }

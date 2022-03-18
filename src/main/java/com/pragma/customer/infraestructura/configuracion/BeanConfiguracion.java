@@ -8,14 +8,15 @@ import com.pragma.customer.dominio.useCase.cliente.ClienteUseCase;
 import com.pragma.customer.dominio.useCase.tipodocumento.TipoDocumentoUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 @Configuration
 public class BeanConfiguracion {
 
     //Bean de Cliente
     @Bean
-    public ClienteUseCase clienteUseCase(ClienteInterfaceService clienteInterfaceService) {
-        return new ClienteUseCase(clienteInterfaceService);
+    public ClienteUseCase clienteUseCase(ClienteInterfaceService clienteInterfaceService, TipoDocumentoUseCase tipoDocumentoUseCase) {
+        return new ClienteUseCase(clienteInterfaceService, tipoDocumentoUseCase);
     }
 
     @Bean
@@ -25,8 +26,8 @@ public class BeanConfiguracion {
 
     //Bean de TipoDocumento
     @Bean
-    public TipoDocumentoUseCase tipoDocumentoUseCase(TipoDocumentoInterfaceService tipoDocumentoInterfaceService) {
-        return new TipoDocumentoUseCase(tipoDocumentoInterfaceService);
+    public TipoDocumentoUseCase tipoDocumentoUseCase(TipoDocumentoInterfaceService tipoDocumentoInterfaceService, @Lazy ClienteUseCase clienteUseCase) {
+        return new TipoDocumentoUseCase(tipoDocumentoInterfaceService, clienteUseCase);
     }
 
     @Bean

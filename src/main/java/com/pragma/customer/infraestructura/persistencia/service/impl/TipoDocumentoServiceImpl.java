@@ -23,62 +23,37 @@ import java.util.Optional;
 @Transactional
 public class TipoDocumentoServiceImpl implements TipoDocumentoInterfaceService {
 
-    Logger logger = LoggerFactory.getLogger(ClienteServiceImpl.class);
-
     @Autowired
     private TipoDocumentoInterfaceReporsitory tipoDocumentoInterfaceReporsitory;
 
     @Autowired
     private TipoDocumentoInterfaceMapper tipoDocumentoInterfaceMapper;
 
-    @Autowired
-    private ClienteInterfaceService clienteInterfaceService;
-
     @Override
     public boolean save(TipoDocumentoDto tipoDocumentoDto) throws Exception{
-        if (!tipoDocumentoInterfaceReporsitory.existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())) {
-            TipoDocumentoEntidad tipoDocumentoEntidad = TipoDocumentoEntidad.builder()
-                    .tipoDocumento(tipoDocumentoDto.getTipoDocumento())
-                    .build();
-            tipoDocumentoInterfaceReporsitory.save(tipoDocumentoEntidad);
-            return true;
-        } else {
-            throw new RequestException("code", HttpStatus.BAD_REQUEST, ErrorsUtils.tipoIdentificacionRegistrada(tipoDocumentoDto.getTipoDocumento()));
-        }
+        TipoDocumentoEntidad tipoDocumentoEntidad = tipoDocumentoInterfaceMapper.toTipoDocumentoEntidad(tipoDocumentoDto);
+        tipoDocumentoInterfaceReporsitory.save(tipoDocumentoEntidad);
+        return true;
     }
 
     @Override
     public boolean delete(String tipo) throws Exception {
-        if(existsByTipoDocumento(tipo)) {
-            if(!clienteInterfaceService.existsByTipoDocumentoEntidad(tipo)) {
-                Optional<TipoDocumentoEntidad> tipoDocumentoEntidad = tipoDocumentoInterfaceReporsitory.findByTipoDocumento(tipo);
-                tipoDocumentoInterfaceReporsitory.delete(tipoDocumentoEntidad.get());
-                return true;
-            } else {
-                throw new RequestException("code", HttpStatus.BAD_REQUEST, "el tipo de documento lo tienen algunos clientes");
-            }
-        }
-        return false;
+        Optional<TipoDocumentoEntidad> tipoDocumentoEntidad = tipoDocumentoInterfaceReporsitory.findByTipoDocumento(tipo);
+        tipoDocumentoInterfaceReporsitory.delete(tipoDocumentoEntidad.get());
+        return true;
     }
 
     @Override
     public boolean update(TipoDocumentoDto tipoDocumentoDto) throws Exception {
-        if(existsByTipoDocumento(tipoDocumentoDto.getTipoDocumento())) {
-            Optional<TipoDocumentoEntidad> tipoDocumentoEntidad = tipoDocumentoInterfaceReporsitory.findByTipoDocumento(tipoDocumentoDto.getTipoDocumento());
-            tipoDocumentoEntidad.get().setTipoDocumento(tipoDocumentoDto.getTipoDocumento());
-            tipoDocumentoInterfaceReporsitory.save(tipoDocumentoEntidad.get());
-            return true;
-        }
-        return false;
+        Optional<TipoDocumentoEntidad> tipoDocumentoEntidad = tipoDocumentoInterfaceReporsitory.findByTipoDocumento(tipoDocumentoDto.getTipoDocumento());
+        tipoDocumentoEntidad.get().setTipoDocumento(tipoDocumentoDto.getTipoDocumento());
+        tipoDocumentoInterfaceReporsitory.save(tipoDocumentoEntidad.get());
+        return true;
     }
 
     @Override
     public List<TipoDocumentoDto> findAll() throws Exception {
         List<TipoDocumentoDto> tipoDocumentoDtoList = tipoDocumentoInterfaceMapper.toTipoDocumentoListDto(tipoDocumentoInterfaceReporsitory.findAll());
-        if(tipoDocumentoDtoList.isEmpty())
-        {
-            throw new LogicException("code", HttpStatus.CONFLICT, ErrorsUtils.sinRegistros());
-        }
         return tipoDocumentoDtoList;
     }
 
@@ -89,16 +64,11 @@ public class TipoDocumentoServiceImpl implements TipoDocumentoInterfaceService {
 
     @Override
     public TipoDocumentoDto findByTipoDocumento(String tipo) throws Exception{
-        existsByTipoDocumento(tipo);
         return tipoDocumentoInterfaceMapper.toTipoDocumentoDto(tipoDocumentoInterfaceReporsitory.findByTipoDocumento(tipo).get());
     }
 
     @Override
     public boolean existsByTipoDocumento(String tipo) throws Exception{
-        if(tipoDocumentoInterfaceReporsitory.existsByTipoDocumento(tipo)) {
-            return true;
-        } else {
-            throw new RequestException("code", HttpStatus.BAD_REQUEST, ErrorsUtils.tipoIdentificacionNoRegistrada(tipo));
-        }
+        return tipoDocumentoInterfaceReporsitory.existsByTipoDocumento(tipo);
     }
 }

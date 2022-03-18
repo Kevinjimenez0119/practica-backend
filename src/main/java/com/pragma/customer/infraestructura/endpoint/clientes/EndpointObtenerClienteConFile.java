@@ -44,6 +44,6 @@ public class EndpointObtenerClienteConFile {
         if (clienteFile.getTipoDocumento().equals(tipo)) {
             return new ResponseEntity(clienteFile, HttpStatus.OK);
         }
-        throw new RequestException("code", HttpStatus.NOT_FOUND, ErrorsUtils.identificacionNoRegistrada(numero.toString()));
+        throw new RequestException(404, ErrorsUtils.identificacionNoRegistrada(numero.toString()));
     }
 }
