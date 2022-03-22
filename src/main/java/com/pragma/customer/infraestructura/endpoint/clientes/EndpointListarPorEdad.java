@@ -37,6 +37,6 @@ public class EndpointListarPorEdad {
                     Integer edad
     ) throws Exception {
         List<ClienteDto> clienteList = manejadorCliente.listarPorEdadMayor(edad);
-        return new ResponseEntity(clienteList, HttpStatus.OK);
+        return new ResponseEntity<>(clienteList, HttpStatus.OK);
     }
 }

@@ -5,36 +5,34 @@ import com.pragma.customer.dominio.modelo.ClienteFileDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 public interface ClienteInterfaceService {
 
     //CRUD
-    boolean save(ClienteDto cliente) throws Exception;
+    boolean save(ClienteDto cliente);
 
-    boolean update(ClienteDto cliente) throws Exception;
+    boolean update(ClienteDto cliente);
 
-    boolean delete(Integer id) throws Exception;
+    boolean delete(Integer id);
 
-    List<ClienteDto> findAll() throws Exception;
+    List<ClienteDto> findAll();
 
     //FIND
     ClienteDto findById(Integer id);
 
-    ClienteDto findByIdentificacion(Integer identificacion) throws Exception;
+    ClienteDto findByIdentificacion(Integer identificacion);
 
-    ClienteFileDto findByIdentificacionFile(Integer identificacion) throws Exception;
+    ClienteFileDto findByIdentificacionFile(Integer identificacion);
 
-    boolean existsByIdentificacion(Integer id) throws Exception;
+    boolean existsByIdentificacion(Integer id);
 
-    List<ClienteDto> findByAge(Integer edad) throws Exception;
+    List<ClienteDto> findByAge(Integer edad);
 
-    boolean existsByTipoDocumentoEntidad(String tipo) throws Exception;
+    boolean existsByTipoDocumentoEntidad(String tipo);
 
     //SORTING
-    Page<ClienteDto> findAllPag(Pageable pageable) throws Exception;
+    Page<ClienteDto> findAllPag(Pageable pageable);
 
 
 }

@@ -1,34 +1,24 @@
 package com.pragma.customer.infraestructura.persistencia.service.impl;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.pragma.customer.aplicacion.utils.ErrorsUtils;
 import com.pragma.customer.dominio.modelo.ClienteDto;
 import com.pragma.customer.dominio.modelo.ClienteFileDto;
 import com.pragma.customer.dominio.modelo.FileImagenDto;
 import com.pragma.customer.dominio.service.ClienteInterfaceService;
 import com.pragma.customer.dominio.service.FileImagenServiceClient;
-import com.pragma.customer.dominio.service.TipoDocumentoInterfaceService;
 import com.pragma.customer.infraestructura.exceptions.LogicException;
-import com.pragma.customer.infraestructura.exceptions.RequestException;
 import com.pragma.customer.infraestructura.mappers.ClienteInterfaceMapper;
 import com.pragma.customer.infraestructura.persistencia.entity.ClienteEntidad;
 import com.pragma.customer.infraestructura.persistencia.entity.TipoDocumentoEntidad;
 import com.pragma.customer.infraestructura.persistencia.repository.ClienteInterfaceRepository;
 import com.pragma.customer.infraestructura.persistencia.repository.TipoDocumentoInterfaceReporsitory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
@@ -48,7 +38,7 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     private FileImagenServiceClient fileImagenServiceClient;
 
     @Override
-    public boolean save(ClienteDto cliente) throws Exception {
+    public boolean save(ClienteDto cliente) {
         Optional<TipoDocumentoEntidad> tipoDocumentoEntidad = tipoDocumentoInterfaceReporsitory.findByTipoDocumento(cliente.getTipoDocumento());
         ClienteEntidad clienteEntidad = ClienteEntidad.builder()
                 .nombres(cliente.getNombres())
@@ -64,7 +54,7 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     }
 
     @Override
-    public boolean update(ClienteDto cliente) throws Exception{
+    public boolean update(ClienteDto cliente) {
         TipoDocumentoEntidad tipoDocumentoEntidad = tipoDocumentoInterfaceReporsitory.findByTipoDocumento(cliente.getTipoDocumento()).get();
         ClienteEntidad clienteUpdate = clienteInterfaceRepository.findByIdentificacion(cliente.getIdentificacion()).get();
         clienteUpdate.setNombres(cliente.getNombres());
@@ -79,7 +69,7 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     }
 
     @Override
-    public boolean delete(Integer identificacion) throws Exception{
+    public boolean delete(Integer identificacion) {
         FileImagenDto fileImagenDto = fileImagenServiceClient.findByNumeroIdentificacion(identificacion);
         if(fileImagenDto.getFileName().equals("none")) throw new LogicException(409, "Error al eliminar, intente mas tarde");
         if(fileImagenDto == null) {
@@ -98,9 +88,8 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     }
 
     @Override
-    public List<ClienteDto> findAll() throws Exception{
-        List<ClienteDto> clienteDtoList = clienteInterfaceMapper.toClienteListDto(clienteInterfaceRepository.findAll());
-        return clienteDtoList;
+    public List<ClienteDto> findAll() {
+        return clienteInterfaceMapper.toClienteListDto(clienteInterfaceRepository.findAll());
     }
 
     @Override
@@ -110,7 +99,7 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
 
 
     @Override
-    public ClienteFileDto findByIdentificacionFile(Integer identificacion) throws Exception {
+    public ClienteFileDto findByIdentificacionFile(Integer identificacion) {
         ClienteDto clienteDto = findByIdentificacion(identificacion);
         FileImagenDto fileImagenDto = fileImagenServiceClient.findByNumeroIdentificacion(identificacion);
         if(fileImagenDto == null || fileImagenDto.getFileName().equals("none")) {
@@ -126,7 +115,7 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
 
     private ClienteFileDto maptoFotocliente(ClienteDto cliente, FileImagenDto fileImagenDto)
     {
-        ClienteFileDto clienteFileDto = ClienteFileDto.builder()
+        return ClienteFileDto.builder()
                 .id(cliente.getId())
                 .nombres(cliente.getNombres())
                 .apellidos(cliente.getApellidos())
@@ -136,45 +125,38 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
                 .fechaNacimiento(cliente.getFechaNacimiento())
                 .ciudadNacimiento(cliente.getCiudadNacimiento())
                 .fileImagenDto(fileImagenDto).build();
-        return clienteFileDto;
     }
 
     @Override
-    public ClienteDto findByIdentificacion(Integer identificacion) throws Exception {
+    public ClienteDto findByIdentificacion(Integer identificacion) {
         Optional<ClienteEntidad> clienteEntidad =clienteInterfaceRepository.findByIdentificacion(identificacion);
         return clienteInterfaceMapper.toClienteDto(clienteEntidad.get());
     }
 
     @Override
-    public boolean existsByIdentificacion(Integer identificacion) throws Exception{
+    public boolean existsByIdentificacion(Integer identificacion) {
         return clienteInterfaceRepository.existsByIdentificacion(identificacion);
     }
 
     @Override
-    public List<ClienteDto> findByAge(Integer edad) throws Exception{
-        List<ClienteDto> clienteDtoList = clienteInterfaceMapper.toClienteListDto(clienteInterfaceRepository.findByAge(edad));
-        return clienteDtoList;
+    public List<ClienteDto> findByAge(Integer edad) {
+        return clienteInterfaceMapper.toClienteListDto(clienteInterfaceRepository.findByAge(edad));
     }
 
     @Override
-    public boolean existsByTipoDocumentoEntidad(String tipo) throws Exception{
+    public boolean existsByTipoDocumentoEntidad(String tipo) {
         Optional<TipoDocumentoEntidad> tipoDocumentoEntidad = tipoDocumentoInterfaceReporsitory.findByTipoDocumento(tipo);
-        if(clienteInterfaceRepository.existsByTipoDocumento(tipoDocumentoEntidad.get().getId()) == 1) {
-            return true;
-        } else {
-            return false;
-        }
+        return clienteInterfaceRepository.existsByTipoDocumento(tipoDocumentoEntidad.get().getId()) == 1;
     }
 
     @Override
-    public Page<ClienteDto> findAllPag(Pageable pageable) throws Exception{
+    public Page<ClienteDto> findAllPag(Pageable pageable) {
         Page<ClienteEntidad> clienteEntidadList = clienteInterfaceRepository.findAll(pageable);
         List<ClienteDto> clienteDtoList = clienteInterfaceMapper.toClienteListDto(clienteEntidadList.toList());
         if(clienteDtoList.isEmpty())
         {
             throw new LogicException(204, ErrorsUtils.sinRegistros());
         }
-        Page<ClienteDto> clienteDtoPageList = new PageImpl<>(clienteDtoList);
-        return clienteDtoPageList;
+        return new PageImpl<>(clienteDtoList);
     }
 }

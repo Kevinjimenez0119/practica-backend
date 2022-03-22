@@ -1,10 +1,8 @@
 package com.pragma.customer.infraestructura.endpoint.tipodocumento;
 
 import com.pragma.customer.aplicacion.manjeador.ManejadorTipoDocumento;
-import com.pragma.customer.aplicacion.utils.ErrorsUtils;
 import com.pragma.customer.dominio.modelo.Mensaje;
 import com.pragma.customer.dominio.modelo.TipoDocumentoDto;
-import com.pragma.customer.infraestructura.exceptions.RequestException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;

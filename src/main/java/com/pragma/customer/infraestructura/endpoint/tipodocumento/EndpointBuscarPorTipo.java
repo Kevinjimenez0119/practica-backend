@@ -1,9 +1,7 @@
 package com.pragma.customer.infraestructura.endpoint.tipodocumento;
 
 import com.pragma.customer.aplicacion.manjeador.ManejadorTipoDocumento;
-import com.pragma.customer.aplicacion.utils.ErrorsUtils;
 import com.pragma.customer.dominio.modelo.TipoDocumentoDto;
-import com.pragma.customer.infraestructura.exceptions.RequestException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -37,6 +35,6 @@ public class EndpointBuscarPorTipo {
                     String tipo
     ) throws Exception {
         TipoDocumentoDto tipoDocumentoDto = manejadorTipoDocumento.buscarPorTipo(tipo);
-        return new ResponseEntity(tipoDocumentoDto, HttpStatus.OK);
+        return new ResponseEntity<>(tipoDocumentoDto, HttpStatus.OK);
     }
 }

@@ -1,10 +1,7 @@
 package com.pragma.customer.infraestructura.endpoint.clientes;
 
 import com.pragma.customer.aplicacion.manjeador.ManejadorCliente;
-import com.pragma.customer.aplicacion.utils.ErrorsUtils;
 import com.pragma.customer.dominio.modelo.ClienteDto;
-import com.pragma.customer.dominio.modelo.Mensaje;
-import com.pragma.customer.infraestructura.exceptions.RequestException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;

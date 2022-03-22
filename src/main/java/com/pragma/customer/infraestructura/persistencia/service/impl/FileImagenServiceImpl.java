@@ -22,10 +22,7 @@ public class FileImagenServiceImpl implements FileImagenServiceClient {
     @Override
     public boolean delete(Integer identificacion) {
         ResponseEntity<Map<String, Object>> clienteResponseEntity = fileImagenInterfaceClient.delete(identificacion);
-        if (clienteResponseEntity.getStatusCodeValue() != 200) {
-            return false;
-        }
-        return true;
+        return clienteResponseEntity.getStatusCodeValue() == 200;
     }
 
     public boolean circuitDelete(Integer identificacion) {
@@ -39,23 +36,20 @@ public class FileImagenServiceImpl implements FileImagenServiceClient {
         if (clienteResponseEntity.getStatusCodeValue() != 200) {
             return null;
         }
-        FileImagenDto fileImagenDto = maptoFotocliente(clienteResponseEntity.getBody());
-        return fileImagenDto;
+        return maptoFotocliente(clienteResponseEntity.getBody());
     }
 
     public FileImagenDto circuitFindByIdentificacionFile(Integer identificacion) {
-        FileImagenDto fileImagenDto = FileImagenDto.builder().fileName("none").build();
-        return fileImagenDto;
+        return FileImagenDto.builder().fileName("none").build();
     }
 
     private FileImagenDto maptoFotocliente(Map<String, Object> fileImagenmap)
     {
-        FileImagenDto fileImagenDto = FileImagenDto.builder()
+        return FileImagenDto.builder()
                 .fileName(fileImagenmap.get("fileName").toString())
                 .base64(fileImagenmap.get("base64").toString())
                 .fileType(fileImagenmap.get("fileType").toString())
                 .identificacion(Integer.parseInt(fileImagenmap.get("identificacion").toString()))
                 .build();
-        return fileImagenDto;
     }
 }

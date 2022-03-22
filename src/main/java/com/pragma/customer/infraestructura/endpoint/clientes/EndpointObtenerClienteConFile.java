@@ -42,7 +42,7 @@ public class EndpointObtenerClienteConFile {
     ) throws Exception {
         ClienteFileDto clienteFile = manejadorCliente.buscarPorIdentificacionFile(numero);
         if (clienteFile.getTipoDocumento().equals(tipo)) {
-            return new ResponseEntity(clienteFile, HttpStatus.OK);
+            return new ResponseEntity<>(clienteFile, HttpStatus.OK);
         }
         throw new RequestException(404, ErrorsUtils.identificacionNoRegistrada(numero.toString()));
     }

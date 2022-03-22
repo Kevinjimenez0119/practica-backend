@@ -1,18 +1,11 @@
 package com.pragma.customer.infraestructura.persistencia.service.impl;
 
-import com.pragma.customer.aplicacion.utils.ErrorsUtils;
 import com.pragma.customer.dominio.modelo.TipoDocumentoDto;
-import com.pragma.customer.dominio.service.ClienteInterfaceService;
 import com.pragma.customer.dominio.service.TipoDocumentoInterfaceService;
-import com.pragma.customer.infraestructura.exceptions.LogicException;
-import com.pragma.customer.infraestructura.exceptions.RequestException;
 import com.pragma.customer.infraestructura.mappers.TipoDocumentoInterfaceMapper;
 import com.pragma.customer.infraestructura.persistencia.entity.TipoDocumentoEntidad;
 import com.pragma.customer.infraestructura.persistencia.repository.TipoDocumentoInterfaceReporsitory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,21 +23,21 @@ public class TipoDocumentoServiceImpl implements TipoDocumentoInterfaceService {
     private TipoDocumentoInterfaceMapper tipoDocumentoInterfaceMapper;
 
     @Override
-    public boolean save(TipoDocumentoDto tipoDocumentoDto) throws Exception{
+    public boolean save(TipoDocumentoDto tipoDocumentoDto) {
         TipoDocumentoEntidad tipoDocumentoEntidad = tipoDocumentoInterfaceMapper.toTipoDocumentoEntidad(tipoDocumentoDto);
         tipoDocumentoInterfaceReporsitory.save(tipoDocumentoEntidad);
         return true;
     }
 
     @Override
-    public boolean delete(String tipo) throws Exception {
+    public boolean delete(String tipo) {
         Optional<TipoDocumentoEntidad> tipoDocumentoEntidad = tipoDocumentoInterfaceReporsitory.findByTipoDocumento(tipo);
         tipoDocumentoInterfaceReporsitory.delete(tipoDocumentoEntidad.get());
         return true;
     }
 
     @Override
-    public boolean update(TipoDocumentoDto tipoDocumentoDto) throws Exception {
+    public boolean update(TipoDocumentoDto tipoDocumentoDto) {
         Optional<TipoDocumentoEntidad> tipoDocumentoEntidad = tipoDocumentoInterfaceReporsitory.findByTipoDocumento(tipoDocumentoDto.getTipoDocumento());
         tipoDocumentoEntidad.get().setTipoDocumento(tipoDocumentoDto.getTipoDocumento());
         tipoDocumentoInterfaceReporsitory.save(tipoDocumentoEntidad.get());
@@ -52,9 +45,8 @@ public class TipoDocumentoServiceImpl implements TipoDocumentoInterfaceService {
     }
 
     @Override
-    public List<TipoDocumentoDto> findAll() throws Exception {
-        List<TipoDocumentoDto> tipoDocumentoDtoList = tipoDocumentoInterfaceMapper.toTipoDocumentoListDto(tipoDocumentoInterfaceReporsitory.findAll());
-        return tipoDocumentoDtoList;
+    public List<TipoDocumentoDto> findAll() {
+        return tipoDocumentoInterfaceMapper.toTipoDocumentoListDto(tipoDocumentoInterfaceReporsitory.findAll());
     }
 
     @Override
@@ -63,12 +55,12 @@ public class TipoDocumentoServiceImpl implements TipoDocumentoInterfaceService {
     }
 
     @Override
-    public TipoDocumentoDto findByTipoDocumento(String tipo) throws Exception{
+    public TipoDocumentoDto findByTipoDocumento(String tipo) {
         return tipoDocumentoInterfaceMapper.toTipoDocumentoDto(tipoDocumentoInterfaceReporsitory.findByTipoDocumento(tipo).get());
     }
 
     @Override
-    public boolean existsByTipoDocumento(String tipo) throws Exception{
+    public boolean existsByTipoDocumento(String tipo) {
         return tipoDocumentoInterfaceReporsitory.existsByTipoDocumento(tipo);
     }
 }

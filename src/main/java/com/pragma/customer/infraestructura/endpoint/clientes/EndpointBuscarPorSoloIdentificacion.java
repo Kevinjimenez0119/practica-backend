@@ -35,6 +35,6 @@ public class EndpointBuscarPorSoloIdentificacion {
                     Integer numero
     ) throws Exception {
         ClienteDto cliente = manejadorCliente.buscarPorIdentificacion(numero);
-        return new ResponseEntity(cliente, HttpStatus.OK);
+        return new ResponseEntity<>(cliente, HttpStatus.OK);
     }
 }
