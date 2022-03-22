@@ -7,7 +7,6 @@ import com.pragma.customer.dominio.modelo.FileImagenDto;
 import com.pragma.customer.dominio.modelo.TipoDocumentoDto;
 import com.pragma.customer.dominio.service.ClienteInterfaceService;
 import com.pragma.customer.dominio.service.FileImagenServiceClient;
-import com.pragma.customer.dominio.service.TipoDocumentoInterfaceService;
 import com.pragma.customer.dominio.useCase.cliente.ClienteUseCase;
 import com.pragma.customer.dominio.useCase.tipodocumento.TipoDocumentoUseCase;
 import com.pragma.customer.infraestructura.exceptions.LogicException;
