@@ -38,6 +38,13 @@ dependencies {
 	// cloud
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	// hystrix and actuator
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-hystrix'
+	//implementation 'org.springframework.cloud:spring-cloud-starter-netflix-hystrix-dashboard'
+	implementation (group: 'org.springframework.cloud', name: 'spring-cloud-netflix-hystrix-dashboard', version: '2.2.2.RELEASE')
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	// admin
+	implementation 'de.codecentric:spring-boot-admin-starter-client:2.3.1'
 	// test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'

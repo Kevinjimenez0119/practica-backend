@@ -1,5 +1,6 @@
 package com.pragma.customer.infraestructura.persistencia.service.impl;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.pragma.customer.dominio.modelo.FileImagenDto;
 import com.pragma.customer.dominio.service.FileImagenServiceClient;
 import com.pragma.customer.infraestructura.clientefeign.FileImagenInterfaceClient;
@@ -17,6 +18,7 @@ public class FileImagenServiceImpl implements FileImagenServiceClient {
     @Autowired
     private FileImagenInterfaceClient fileImagenInterfaceClient;
 
+    @HystrixCommand(fallbackMethod = "circuitDelete")
     @Override
     public boolean delete(Integer identificacion) {
         ResponseEntity<Map<String, Object>> clienteResponseEntity = fileImagenInterfaceClient.delete(identificacion);
@@ -26,6 +28,11 @@ public class FileImagenServiceImpl implements FileImagenServiceClient {
         return true;
     }
 
+    public boolean circuitDelete(Integer identificacion) {
+        return false;
+    }
+
+    @HystrixCommand(fallbackMethod = "circuitFindByIdentificacionFile")
     @Override
     public FileImagenDto findByNumeroIdentificacion(Integer identificacion){
         ResponseEntity<Map<String, Object>> clienteResponseEntity = fileImagenInterfaceClient.findByNumeroIdentificacion(identificacion);
@@ -33,6 +40,11 @@ public class FileImagenServiceImpl implements FileImagenServiceClient {
             return null;
         }
         FileImagenDto fileImagenDto = maptoFotocliente(clienteResponseEntity.getBody());
+        return fileImagenDto;
+    }
+
+    public FileImagenDto circuitFindByIdentificacionFile(Integer identificacion) {
+        FileImagenDto fileImagenDto = FileImagenDto.builder().fileName("none").build();
         return fileImagenDto;
     }
 

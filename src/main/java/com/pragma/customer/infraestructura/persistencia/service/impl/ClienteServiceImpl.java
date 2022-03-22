@@ -1,5 +1,6 @@
 package com.pragma.customer.infraestructura.persistencia.service.impl;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.pragma.customer.aplicacion.utils.ErrorsUtils;
 import com.pragma.customer.dominio.modelo.ClienteDto;
 import com.pragma.customer.dominio.modelo.ClienteFileDto;
@@ -80,17 +81,19 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
     @Override
     public boolean delete(Integer identificacion) throws Exception{
         FileImagenDto fileImagenDto = fileImagenServiceClient.findByNumeroIdentificacion(identificacion);
+        if(fileImagenDto.getFileName().equals("none")) throw new LogicException(409, "Error al eliminar, intente mas tarde");
         if(fileImagenDto == null) {
             Optional<ClienteEntidad> clienteEntidad = clienteInterfaceRepository.findByIdentificacion(identificacion);
             clienteInterfaceRepository.delete(clienteEntidad.get());
             return true;
         } else {
-            if(fileImagenServiceClient.delete(identificacion)==true) {
+            if(fileImagenServiceClient.delete(identificacion)) {
                 Optional<ClienteEntidad> clienteEntidad = clienteInterfaceRepository.findByIdentificacion(identificacion);
                 clienteInterfaceRepository.delete(clienteEntidad.get());
                 return true;
+            } else {
+                throw new LogicException(409, "Error al eliminar, intente mas tarde");
             }
-            return false;
         }
     }
 
@@ -105,11 +108,12 @@ public class ClienteServiceImpl implements ClienteInterfaceService {
         return clienteInterfaceMapper.toClienteDto(clienteInterfaceRepository.findById(id).get());
     }
 
+
     @Override
     public ClienteFileDto findByIdentificacionFile(Integer identificacion) throws Exception {
         ClienteDto clienteDto = findByIdentificacion(identificacion);
         FileImagenDto fileImagenDto = fileImagenServiceClient.findByNumeroIdentificacion(identificacion);
-        if(fileImagenDto == null) {
+        if(fileImagenDto == null || fileImagenDto.getFileName().equals("none")) {
             fileImagenDto = FileImagenDto.builder()
                     .fileName("")
                     .fileType("")
